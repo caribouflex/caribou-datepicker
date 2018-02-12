@@ -7,7 +7,14 @@
         display: block;
       }
     </style>
-    <h2>Hello [[prop1]]!</h2>
+    <h2>{{date}}</h2>/
+    <h2>{{month}}</h2>/
+    <h2>{{year}}</h2>
+    <hr>
+    <h2>{{getDayValue(day)}}</h2>
+    <h2>{{date}}</h2>/
+    <h2>{{getMonthValue(month)}}</h2>/
+    <h2>{{year}}</h2>
   </template>
 
   <script>
@@ -20,14 +27,82 @@
      * @demo demo/index.html
      */
     class CaribouDatepicker extends Polymer.Element {
-      static get is() { return 'caribou-datepicker'; }
+      static get is() {
+        return 'caribou-datepicker';
+      }
+
       static get properties() {
         return {
-          prop1: {
-            type: String,
-            value: 'caribou-datepicker'
+          year: {
+            type: Number
+          },
+
+          month: {
+            type: Number
+          },
+
+          date: {
+            type: Number
+          },
+
+          day: {
+            type: Number
+          },
+
+          __daysValue: {
+            type: Array,
+            value: function () {
+              return [
+                "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
+              ];
+            },
+            readOnly: true
+          },
+
+          __monthsValue: {
+            type: Array,
+            value: function () {
+              return ["January", "February", "March", "April", "May", "June", "July", "August",
+                "September", "October", "November", "December"
+              ];
+            },
+            readOnly: true
           }
         };
+      }
+
+      ready() {
+        super.ready();
+        this.getCurrentDate();
+      }
+
+      /**
+       * Initialize the properties with the current values.
+       */
+      getCurrentDate() {
+        var today = new Date();
+        this.date = today.getDate();
+        this.month = today.getMonth() + 1;
+        this.year = today.getFullYear();
+        this.day = today.getDay();
+      }
+
+      /**
+       * Return the day value of the current number.
+       * @param {Number} day This is the number of the day. (0-6)
+       * @return {String} The day value.
+       */
+      getDayValue(day) {
+        return this.__daysValue[day];
+      }
+
+      /** 
+       * Return the month value of the current number. 
+       * @param {Number} day This is the number of the month. (1 to 12)  
+       * @return {String} The month value. 
+       */
+      getMonthValue(month) {
+        return this.__monthsValue[month - 1];
       }
     }
 
