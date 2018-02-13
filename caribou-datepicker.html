@@ -119,6 +119,10 @@
         color: white !important;
         font-size: 16px;
       }
+
+      #years {
+        display: none;
+      }
     </style>
     <div class="month">
       <ul>
@@ -128,13 +132,13 @@
           <paper-button>{{getMonthValue(month)}}</paper-button>
           <br>
           <span style="font-size:18px">
-            <paper-button>{{year}}</paper-button>
+            <paper-button on-tap="_toggleYearView">{{year}}</paper-button>
           </span>
         </li>
       </ul>
     </div>
 
-    <ul class="weekdays">
+    <ul class="weekdays" id="weekDays">
       <li>Su</li>
       <li>Mo</li>
       <li>Tu</li>
@@ -144,15 +148,17 @@
       <li>Sa</li>
     </ul>
 
-    <ul class="days">
+    <ul class="days" id="days">
       <template is="dom-repeat" items="{{_getArrayOfDays(month,year)}}">
         <li>
-          <span class$="{{_getClassDate(item.isCurrentDay)}}">{{item.value}}</span>
+          <paper-button>
+            <span class$="{{_getClassDate(item.isCurrentDay)}}">{{item.value}}</span>
+          </paper-button>
         </li>
       </template>
     </ul>
 
-    <ul class="years">
+    <ul id="years" class="years" hidden$="{{!showYear}}">
       <paper-button on-tap="previousYear">
         <svg width="25" height="25">
           <path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z" />
@@ -160,7 +166,7 @@
       </paper-button>
       <template is="dom-repeat" items="{{_getArrayOfYears(year)}}">
         <li>
-          <paper-button>
+          <paper-button data-year$="{{item.value}}" on-tap="_setYear">
             <span class$="{{_getClassYear(item.isCurrentYear, item.isActiveYear)}}">{{item.value}}</span>
           </paper-button>
         </li>
@@ -253,6 +259,11 @@
               ];
             },
             readOnly: true
+          },
+
+          showYear: {
+            type: Boolean,
+            value: false
           }
         };
       }
@@ -351,13 +362,13 @@
 
       _getArrayOfYears() {
         let yearsArray = new Array();
-        yearsArray[0] = this._getYearObject(this.year - 3, false);
-        yearsArray[1] = this._getYearObject(this.year - 2, false);
-        yearsArray[2] = this._getYearObject(this.year - 1, false);
-        yearsArray[3] = this._getYearObject(this.year, true);
-        yearsArray[4] = this._getYearObject(this.year + 1, false);
-        yearsArray[5] = this._getYearObject(this.year + 2, false);
-        yearsArray[6] = this._getYearObject(this.year + 3, false);
+        yearsArray[0] = this._getYearObject(Number(this.year) - 3, false);
+        yearsArray[1] = this._getYearObject(Number(this.year) - 2, false);
+        yearsArray[2] = this._getYearObject(Number(this.year) - 1, false);
+        yearsArray[3] = this._getYearObject(Number(this.year), true);
+        yearsArray[4] = this._getYearObject(Number(this.year) + 1, false);
+        yearsArray[5] = this._getYearObject(Number(this.year) + 2, false);
+        yearsArray[6] = this._getYearObject(Number(this.year) + 3, false);
 
         return yearsArray;
       }
@@ -384,27 +395,45 @@
       }
 
       previousMonth() {
-        var prevMonth = new Date(this.year, this.month - 1, 0);
+        var prevMonth = new Date(this.year, this.month, 0);
         this.date = prevMonth.getDate();
-        this.month = prevMonth.getMonth() + 1;
+        this.month = prevMonth.getMonth();
         this.year = prevMonth.getFullYear();
         this.day = prevMonth.getDay();
       }
 
       nextMonth() {
-        var nextMonth = new Date(this.year, this.month, 1);
+        var nextMonth = new Date(this.year, this.month + 1, 1);
         this.date = nextMonth.getDate();
-        this.month = nextMonth.getMonth() + 1;
+        this.month = nextMonth.getMonth();
         this.year = nextMonth.getFullYear();
         this.day = nextMonth.getDay();
       }
 
       nextYear() {
-        this.year = this.year + 1;
+        this.year = Number(this.year) + 1;
       }
 
       previousYear() {
-        this.year = this.year - 1;
+        this.year = Number(this.year) - 1;
+      }
+
+      _setYear(e) {
+        this.year = e.currentTarget.dataset.year;
+        this._toggleYearView();
+      }
+
+      _toggleYearView() {
+        this.showYear = !this.showYear;
+        if (this.showYear) {
+          this.$.weekDays.style.display = "none";
+          this.$.years.style.display = "block";
+          this.$.days.style.display = "none";
+        } else {
+          this.$.weekDays.style.display = "block";
+          this.$.years.style.display = "none";
+          this.$.days.style.display = "block";
+        }
       }
     }
 
