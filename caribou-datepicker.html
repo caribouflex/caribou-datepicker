@@ -1,5 +1,10 @@
 <link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../paper-input/paper-input-container.html">
+<link rel="import" href="../paper-input/paper-input-error.html">
 <link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="caribou-date-input.html">
+<link rel="import" href="caribou-datepicker-custom-icons.html">
 
 <dom-module id="caribou-datepicker">
   <template>
@@ -95,10 +100,6 @@
         color: white !important
       }
 
-
-
-
-
       .years {
         display: -ms-flexbox;
         display: -webkit-flex;
@@ -123,7 +124,21 @@
       #years {
         display: none;
       }
+
+      /* #calendarIcon {
+        --iron-icon-fill-color: #1abc9c;
+      } */
     </style>
+
+    <paper-input-container always-float-label auto-validate attr-for-value="value">
+      <label slot="label">Date</label>
+      <caribou-date-input class="paper-input-input" slot="input"></caribou-date-input>
+      <paper-icon-button id="calendarIcon" slot="suffix" icon="caribou-datepicker-icons:calendar"></paper-icon-button>
+      <paper-input-error slot="add-on">Error!</paper-input-error>
+    </paper-input-container>
+
+
+
     <div class="month">
       <ul>
         <paper-button class="prev" on-tap="previousMonth">&#10094;</paper-button>
