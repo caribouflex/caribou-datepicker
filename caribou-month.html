@@ -1,0 +1,341 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../paper-button/paper-button.html">
+
+<dom-module id="caribou-month">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+
+            ul {
+                list-style-type: none;
+            }
+
+            body {
+                font-family: Verdana, sans-serif;
+            }
+
+            /* Month header */
+
+            .month {
+                padding: 70px 25px;
+                width: 100%;
+                background: #1abc9c;
+                text-align: center;
+            }
+
+            /* Month list */
+
+            .month ul {
+                margin: 0;
+                padding: 0;
+            }
+
+            .month ul li {
+                color: white;
+                font-size: 20px;
+                text-transform: uppercase;
+                letter-spacing: 3px;
+            }
+
+            /* Previous button inside month header */
+
+            .month .prev {
+                float: left;
+                padding-top: 10px;
+            }
+
+            /* Next button */
+
+            .month .next {
+                float: right;
+                padding-top: 10px;
+            }
+
+            /* Weekdays
+(Mon-Sun) */
+
+            .weekdays {
+                margin: 0;
+                padding: 10px 0;
+                background-color: #ddd;
+            }
+
+            .weekdays li {
+                display: inline-block;
+                width: 13.6%;
+                color: #666;
+                text-align: center;
+            }
+
+            /* Days (1-31) */
+
+            .days {
+                padding: 10px 0;
+                background: #eee;
+                margin: 0;
+            }
+
+            .days li {
+                list-style-type: none;
+                display: inline-block;
+                width: 13.6%;
+                text-align: center;
+                margin-bottom: 5px;
+                font-size: 12px;
+                color: #777;
+            }
+
+            /* Highlight the "current" day */
+
+            .days li .active {
+                padding: 5px;
+                background: #1abc9c;
+                color: white !important
+            }
+        </style>
+
+        <div class="month">
+            <ul>
+                <paper-button class="prev" on-tap="previousMonth">&#10094;</paper-button>
+                <paper-button class="next" on-tap="nextMonth">&#10095;</paper-button>
+                <li>
+                    <paper-button>{{getMonthValue(month)}}</paper-button>
+                    <br>
+                    <span style="font-size:18px">
+                        <paper-button on-tap="_toggleYearView">{{year}}</paper-button>
+                    </span>
+                </li>
+            </ul>
+        </div>
+
+        <ul class="weekdays" id="weekDays">
+            <li>Su</li>
+            <li>Mo</li>
+            <li>Tu</li>
+            <li>We</li>
+            <li>Th</li>
+            <li>Fr</li>
+            <li>Sa</li>
+        </ul>
+        <ul class="days" id="days">
+            <template is="dom-repeat" items="{{_getArrayOfDays(month,year)}}">
+                <li>
+                    <paper-button on-tap="dateSelected" data-dday$="{{item.value}}">
+                        <span class$="{{_getClassDate(item.isCurrentDay)}}">{{item.value}}</span>
+                    </paper-button>
+                </li>
+            </template>
+        </ul>
+    </template>
+
+    <script>
+        /**
+         * `caribou-datepicker`
+         * Polymer 2 element used to select a date picker following material design.
+         *
+         * @customElement
+         * @polymer
+         * @demo demo/index.html
+         */
+        class CaribouMonthElement extends Polymer.Element {
+            static get is() {
+                return 'caribou-month';
+            }
+
+            static get properties() {
+                return {
+                    year: {
+                        type: Number
+                    },
+
+                    currentYear: {
+                        type: Number
+                    },
+
+                    month: {
+                        type: Number
+                    },
+
+                    currentMonth: {
+                        type: Number
+                    },
+
+                    date: {
+                        type: Number
+                    },
+
+                    currentDate: {
+                        type: Number
+                    },
+
+                    /**
+                     * Sunday is 0 and monday is 1.
+                     * This is the number of the day
+                     */
+                    day: {
+                        type: Number
+                    },
+
+                    /**
+                     * Sunday is 0 and monday is 1.
+                     * This is the number of the current day
+                     */
+                    currentDay: {
+                        type: Number
+                    },
+
+                    __daysValue: {
+                        type: Array,
+                        value: function () {
+                            return [
+                                "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday",
+                                "Sunday"
+                            ];
+                        },
+                        readOnly: true
+                    },
+
+                    __monthsValue: {
+                        type: Array,
+                        value: function () {
+                            return ["January", "February", "March", "April", "May", "June", "July",
+                                "August",
+                                "September", "October", "November", "December"
+                            ];
+                        },
+                        readOnly: true
+                    }
+                };
+            }
+
+            ready() {
+                super.ready();
+                this.getCurrentDate();
+            }
+
+            /**
+             * Initialize the properties with the current values.
+             */
+            getCurrentDate() {
+                var today = new Date();
+                this.currentDate = today.getDate();
+                this.date = this.currentDate;
+                this.currentMonth = today.getMonth();
+                this.month = this.currentMonth;
+                this.currentYear = today.getFullYear();
+                this.year = this.currentYear;
+                this.currentDay = today.getDay();
+                this.day = this.currentDay;
+            }
+
+            /**
+             * Return the day value of the current number.
+             * @param {Number} day This is the number of the day. (0-6)
+             * @return {String} The day value.
+             */
+            getDayValue(day) {
+                return this.__daysValue[day];
+            }
+
+            /** 
+             * Return the month value of the current number. 
+             * @param {Number} day This is the number of the month. (1 to 12)  
+             * @return {String} The month value. 
+             */
+            getMonthValue(month) {
+                return this.__monthsValue[month];
+            }
+
+            /**
+             * Return the number of day in a month
+             * @param {Number} month The month number
+             * @param {Number} year The year number
+             * @return {Number} The number of day in a month
+             */
+            getNumberOfDaysInMonth(month, year) {
+                return new Date(year, month + 1, 0).getDate();
+            }
+
+            /**
+             * Return the number of the first day in the month
+             * @param {Number} month The month number
+             * @param {Number} year The year number
+             * @return {Number} An array of integer, the length is the number of the day in the month
+             */
+            getFirstMonthDay(month, year) {
+                return new Date(year, month + 1, 1).getDay();
+            }
+
+
+            _getArrayOfDays(month, year) {
+                let daysInMonth;
+                let firstDayOfWeek;
+                let daysArray = new Array();
+                if (month !== undefined && year !== undefined) {
+
+                    // Get the first day of the week.
+                    // We do -1 because we will use it 0 base.
+                    firstDayOfWeek = this.getFirstMonthDay(month, year);
+                    // Get the number of days in the month
+                    daysInMonth = this.getNumberOfDaysInMonth(month, year);
+
+                    //day number increment
+                    let j = 0
+
+                    for (var i = firstDayOfWeek; i < daysInMonth + firstDayOfWeek; i++) {
+                        j = j + 1;
+                        let isCurrentDay = false;
+                        if (this.currentMonth === month && this.currentYear === year && this.currentDate === j) {
+                            isCurrentDay = true;
+                        }
+
+                        daysArray[i] = {
+                            value: j,
+                            isCurrentDay: isCurrentDay,
+                        };
+                    }
+                    return daysArray;
+
+                }
+            }
+
+            _getClassDate(isCurrentDay) {
+                if (isCurrentDay) return "active";
+            }
+
+            _getClassYear(isCurrentYear, isActiveYear) {
+                if (isActiveYear) return "active";
+                if (isCurrentYear) return "current";
+            }
+
+            previousMonth() {
+                var prevMonth = new Date(this.year, this.month, 0);
+                this.date = prevMonth.getDate();
+                this.month = prevMonth.getMonth();
+                this.year = prevMonth.getFullYear();
+                this.day = prevMonth.getDay();
+            }
+
+            nextMonth() {
+                var nextMonth = new Date(this.year, this.month + 1, 1);
+                this.date = nextMonth.getDate();
+                this.month = nextMonth.getMonth();
+                this.year = nextMonth.getFullYear();
+                this.day = nextMonth.getDay();
+            }
+
+            _toggleYearView() {
+                console.log("FIRE EVENT TO DISPLAY YEAR VIEW");
+            }
+
+            dateSelected(e) {
+                var date = e.currentTarget.dataset.dday;
+                console.log("Date selected : " + date + " / " + (Number(this.month) + 1) + " / " + this.year);
+            }
+        }
+
+        window.customElements.define(CaribouMonthElement.is, CaribouMonthElement);
+    </script>
+</dom-module>

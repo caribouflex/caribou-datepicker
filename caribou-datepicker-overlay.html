@@ -1,0 +1,43 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="caribou-month.html">
+
+<dom-module id="caribou-datepicker-overlay">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+        </style>
+
+        <caribou-month></caribou-month>
+    </template>
+
+    <script>
+        /**
+         * `caribou-datepicker`
+         * Polymer 2 element used to select a date picker following material design.
+         *
+         * @customElement
+         * @polymer
+         * @demo demo/index.html
+         */
+        class CaribouDatepickerOverlayElement extends Polymer.Element {
+            static get is() {
+                return 'caribou-datepicker-overlay';
+            }
+
+            static get properties() {
+                return {
+
+                };
+            }
+
+            ready() {
+                super.ready();
+            }
+
+        }
+
+        window.customElements.define(CaribouDatepickerOverlayElement.is, CaribouDatepickerOverlayElement);
+    </script>
+</dom-module>
