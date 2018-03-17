@@ -1,5 +1,8 @@
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="caribou-month.html">
+<link rel="import" href="caribou-year.html">
+
+<!-- <link rel="import" href="caribou-calendar.html"> -->
 
 <dom-module id="caribou-datepicker-overlay">
     <template>
@@ -9,7 +12,9 @@
             }
         </style>
 
-        <caribou-month></caribou-month>
+        <!-- <caribou-calendar></caribou-calendar> -->
+        <caribou-month date="{{date}}" month={{month}} year="{{year}}"></caribou-month>
+        <caribou-year year="{{year}}"></caribou-year>
     </template>
 
     <script>
@@ -28,14 +33,24 @@
 
             static get properties() {
                 return {
-
+                    year: {
+                        type: Number,
+                        notify: true
+                    },
+                    month: {
+                        type: Number,
+                        notify: true
+                    },
+                    date: {
+                        type: Number,
+                        notify: true
+                    }
                 };
             }
 
             ready() {
                 super.ready();
             }
-
         }
 
         window.customElements.define(CaribouDatepickerOverlayElement.is, CaribouDatepickerOverlayElement);

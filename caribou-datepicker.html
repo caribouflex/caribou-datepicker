@@ -31,14 +31,14 @@
 
     <paper-input-container always-float-label auto-validate attr-for-value="value">
       <label slot="label">Date</label>
-      <caribou-date-input class="paper-input-input" slot="input"></caribou-date-input>
+      <caribou-date-input class="paper-input-input" slot="input" date-d="{{date}}" date-m="{{month}}" date-y="{{year}}"></caribou-date-input>
       <paper-icon-button id="calendarIcon" slot="suffix" on-tap="open" icon="caribou-datepicker-icons:calendar"></paper-icon-button>
       <paper-input-error slot="add-on">Error!</paper-input-error>
     </paper-input-container>
 
     <iron-dropdown id="dropdown" opened>
       <div slot="dropdown-content">
-        <caribou-datepicker-overlay></caribou-datepicker-overlay>
+        <caribou-datepicker-overlay date="{{date}}" month="{{month}}" year="{{year}}"></caribou-datepicker-overlay>
       </div>
     </iron-dropdown>
 

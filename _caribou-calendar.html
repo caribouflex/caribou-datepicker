@@ -1,7 +1,7 @@
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../paper-button/paper-button.html">
 
-<dom-module id="caribou-month">
+<dom-module id="caribou-calendar">
     <template>
         <style>
             :host {
@@ -94,6 +94,32 @@
                 background: #1abc9c;
                 color: white !important
             }
+
+            .years {
+                display: -ms-flexbox;
+                display: -webkit-flex;
+                display: flex;
+                -ms-flex-direction: column;
+                -webkit-flex-direction: column;
+                flex-direction: column;
+            }
+
+            .years li paper-button .current {
+                padding: 5px;
+                color: #1abc9c;
+            }
+
+            .years li paper-button .active {
+                padding: 5px;
+                background: #1abc9c;
+                color: white !important;
+                font-size: 16px;
+            }
+
+            #years {
+                display: none;
+            }
+
         </style>
 
         <div class="month">
@@ -119,15 +145,42 @@
             <li>Fr</li>
             <li>Sa</li>
         </ul>
+
         <ul class="days" id="days">
             <template is="dom-repeat" items="{{_getArrayOfDays(month,year)}}">
                 <li>
-                    <paper-button on-tap="dateSelected" data-dday$="{{item.value}}">
+                    <paper-button>
                         <span class$="{{_getClassDate(item.isCurrentDay)}}">{{item.value}}</span>
                     </paper-button>
                 </li>
             </template>
         </ul>
+
+        <ul id="years" class="years" hidden$="{{!showYear}}">
+            <paper-button on-tap="previousYear">
+                <svg width="25" height="25">
+                    <path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z" />
+                </svg>
+            </paper-button>
+            <template is="dom-repeat" items="{{_getArrayOfYears(year)}}">
+                <li>
+                    <paper-button data-year$="{{item.value}}" on-tap="_setYear">
+                        <span class$="{{_getClassYear(item.isCurrentYear, item.isActiveYear)}}">{{item.value}}</span>
+                    </paper-button>
+                </li>
+            </template>
+            <paper-button on-tap="nextYear">
+                <svg width="25" height="25">
+                    <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z" />
+                </svg>
+            </paper-button>
+        </ul>
+
+
+
+        <!-- <li>
+        <span class="active">10</span>
+      </li> -->
     </template>
 
     <script>
@@ -139,16 +192,15 @@
          * @polymer
          * @demo demo/index.html
          */
-        class CaribouMonthElement extends Polymer.Element {
+        class CaribouCalendarElement extends Polymer.Element {
             static get is() {
-                return 'caribou-month';
+                return 'caribou-calendar';
             }
 
             static get properties() {
                 return {
                     year: {
-                        type: Number,
-                        notify: true
+                        type: Number
                     },
 
                     currentYear: {
@@ -156,8 +208,7 @@
                     },
 
                     month: {
-                        type: Number,
-                        notify: true
+                        type: Number
                     },
 
                     currentMonth: {
@@ -165,8 +216,7 @@
                     },
 
                     date: {
-                        type: Number,
-                        notify: true
+                        type: Number
                     },
 
                     currentDate: {
@@ -193,8 +243,7 @@
                         type: Array,
                         value: function () {
                             return [
-                                "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday",
-                                "Sunday"
+                                "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
                             ];
                         },
                         readOnly: true
@@ -203,12 +252,16 @@
                     __monthsValue: {
                         type: Array,
                         value: function () {
-                            return ["January", "February", "March", "April", "May", "June", "July",
-                                "August",
+                            return ["January", "February", "March", "April", "May", "June", "July", "August",
                                 "September", "October", "November", "December"
                             ];
                         },
                         readOnly: true
+                    },
+
+                    showYear: {
+                        type: Boolean,
+                        value: false
                     }
                 };
             }
@@ -226,7 +279,7 @@
                 this.currentDate = today.getDate();
                 this.date = this.currentDate;
                 this.currentMonth = today.getMonth();
-                this.month = this.currentMonth + 1;
+                this.month = this.currentMonth;
                 this.currentYear = today.getFullYear();
                 this.year = this.currentYear;
                 this.currentDay = today.getDay();
@@ -248,7 +301,7 @@
              * @return {String} The month value. 
              */
             getMonthValue(month) {
-                return this.__monthsValue[month - 1];
+                return this.__monthsValue[month];
             }
 
             /**
@@ -258,7 +311,7 @@
              * @return {Number} The number of day in a month
              */
             getNumberOfDaysInMonth(month, year) {
-                return new Date(year, month, 0).getDate();
+                return new Date(year, month + 1, 0).getDate();
             }
 
             /**
@@ -268,7 +321,7 @@
              * @return {Number} An array of integer, the length is the number of the day in the month
              */
             getFirstMonthDay(month, year) {
-                return new Date(year, month - 1, 1).getDay();
+                return new Date(year, month + 1, 1).getDay();
             }
 
 
@@ -304,6 +357,32 @@
                 }
             }
 
+
+            _getArrayOfYears() {
+                let yearsArray = new Array();
+                yearsArray[0] = this._getYearObject(Number(this.year) - 3, false);
+                yearsArray[1] = this._getYearObject(Number(this.year) - 2, false);
+                yearsArray[2] = this._getYearObject(Number(this.year) - 1, false);
+                yearsArray[3] = this._getYearObject(Number(this.year), true);
+                yearsArray[4] = this._getYearObject(Number(this.year) + 1, false);
+                yearsArray[5] = this._getYearObject(Number(this.year) + 2, false);
+                yearsArray[6] = this._getYearObject(Number(this.year) + 3, false);
+
+                return yearsArray;
+            }
+
+            _getYearObject(year, isActiveYear) {
+                let isCurrentYear = false;
+                if (this.currentYear === year)
+                    isCurrentYear = true;
+
+                return {
+                    value: year,
+                    isCurrentYear: isCurrentYear,
+                    isActiveYear: isActiveYear
+                };
+            }
+
             _getClassDate(isCurrentDay) {
                 if (isCurrentDay) return "active";
             }
@@ -314,35 +393,48 @@
             }
 
             previousMonth() {
-                var prevMonth = new Date(this.year, this.month - 1, 1);
+                var prevMonth = new Date(this.year, this.month, 0);
                 this.date = prevMonth.getDate();
-
-                this.month = prevMonth.getMonth() === 0 ? 12 : prevMonth.getMonth();
-                if (this.month === 12)
-                    this.year = prevMonth.getFullYear() - 1;
-                else
-                    this.year = prevMonth.getFullYear();
+                this.month = prevMonth.getMonth();
+                this.year = prevMonth.getFullYear();
                 this.day = prevMonth.getDay();
             }
 
             nextMonth() {
-                var nextMonth = new Date(this.year, this.month, 1);
+                var nextMonth = new Date(this.year, this.month + 1, 1);
                 this.date = nextMonth.getDate();
-                this.month = nextMonth.getMonth() + 1;
+                this.month = nextMonth.getMonth();
                 this.year = nextMonth.getFullYear();
                 this.day = nextMonth.getDay();
             }
 
-            _toggleYearView() {
-                console.log("FIRE EVENT TO DISPLAY YEAR VIEW");
+            nextYear() {
+                this.year = Number(this.year) + 1;
             }
 
-            dateSelected(e) {
-                var date = e.currentTarget.dataset.dday;
-                console.log("Date selected : " + date + " / " + (Number(this.month) + 1) + " / " + this.year);
+            previousYear() {
+                this.year = Number(this.year) - 1;
+            }
+
+            _setYear(e) {
+                this.year = e.currentTarget.dataset.year;
+                this._toggleYearView();
+            }
+
+            _toggleYearView() {
+                this.showYear = !this.showYear;
+                if (this.showYear) {
+                    this.$.weekDays.style.display = "none";
+                    this.$.years.style.display = "block";
+                    this.$.days.style.display = "none";
+                } else {
+                    this.$.weekDays.style.display = "block";
+                    this.$.years.style.display = "none";
+                    this.$.days.style.display = "block";
+                }
             }
         }
 
-        window.customElements.define(CaribouMonthElement.is, CaribouMonthElement);
+        window.customElements.define(CaribouCalendarElement.is, CaribouCalendarElement);
     </script>
 </dom-module>

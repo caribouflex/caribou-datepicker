@@ -56,17 +56,20 @@
                         notify: true,
                         type: String
                     },
-                    _date1: {
-                        type: String,
-                        value: ''
+                    _date1: Number,
+                    _date2: Number,
+                    _date3: Number,
+                    dateD: {
+                        type: Number,
+                        notify: true
                     },
-                    _date2: {
-                        type: String,
-                        value: ''
+                    dateM: {
+                        type: Number,
+                        notify: true
                     },
-                    _date3: {
-                        type: String,
-                        value: ''
+                    dateY: {
+                        type: Number,
+                        notify: true
                     },
                     validator: {
                         type: String,
@@ -77,12 +80,36 @@
 
             static get observers() {
                 return [
-                    '_computeValue(_date1,_date2,_date3)'
+                    '_computeValue(_date1,_date2,_date3)',
+                    '_setDateD(dateD)',
+                    '_setDateM(dateM)',
+                    '_setDateY(dateY)'
                 ];
             }
 
             _computeValue(date1, date2, date3) {
-                this.value = date1.trim() + '-' + date2.trim() + '-' + date3.trim();
+                if (date1 !== "" && date1 !== undefined && date1 !== null) {
+                    this.dateD = date1;
+                }
+                if (date2 !== "" && date2 !== undefined && date2 !== null) {
+                    this.dateM = date2;
+                }
+                if (date3 !== "" && date3 !== undefined && date3 !== null) {
+                    this.dateY = date3;
+                }
+                this.value = date1 + '-' + date2 + '-' + date3;
+            }
+
+            _setDateD(dateD) {
+                this._date1 = dateD;
+            }
+
+            _setDateM(dateM) {
+                this._date2 = dateM;
+            }
+
+            _setDateY(dateY) {
+                this._date3 = dateY;
             }
         }
 
