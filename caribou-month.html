@@ -1,11 +1,18 @@
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="caribou-datepicker-custom-icons.html">
+
+
 
 <dom-module id="caribou-month">
     <template>
         <style>
             :host {
                 display: block;
+                overflow: hidden;
+                width: 100%;
             }
 
             :host([hidden]) {
@@ -23,7 +30,7 @@
             /* Month header */
 
             .month {
-                padding: 70px 25px;
+                padding: 70px 0;
                 width: 100%;
                 background: #1abc9c;
                 text-align: center;
@@ -31,7 +38,7 @@
 
             /* Month list */
 
-            .month ul {
+            /* .month ul {
                 margin: 0;
                 padding: 0;
             }
@@ -41,21 +48,21 @@
                 font-size: 20px;
                 text-transform: uppercase;
                 letter-spacing: 3px;
-            }
+            } */
 
             /* Previous button inside month header */
 
-            .month .prev {
+            /* .month .prev {
                 float: left;
                 padding-top: 10px;
-            }
+            } */
 
             /* Next button */
 
-            .month .next {
+            /* .month .next {
                 float: right;
                 padding-top: 10px;
-            }
+            } */
 
             /* Weekdays
 (Mon-Sun) */
@@ -68,7 +75,7 @@
 
             .weekdays li {
                 display: inline-block;
-                width: 13.6%;
+                width: 13.5%;
                 color: #666;
                 text-align: center;
             }
@@ -84,7 +91,7 @@
             .days li {
                 list-style-type: none;
                 display: inline-block;
-                width: 13.6%;
+                width: 13.5%;
                 text-align: center;
                 margin-bottom: 5px;
                 font-size: 12px;
@@ -94,29 +101,57 @@
             /* Highlight the "current" day */
 
             .days li .active {
-                padding: 5px;
                 color: #1abc9c !important;
             }
 
             .days li .selected {
-                padding: 5px;
                 background: #1abc9c;
-                color: white !important
+                color: white !important;
+                border-radius: 50px;
+            }
+
+            .days li span {
+                width: 20px;
+                padding: 5px;
+            }
+
+            paper-button {
+                border-radius: 50px;
+            }
+
+            #monthNav {
+                @apply --layout-horizontal;
+            }
+
+            #monthNav paper-button {
+                font-size: 14px;
+                text-transform: capitalize;
+                @apply --layout-flex;
             }
         </style>
 
         <div class="month">
-            <ul>
-                <paper-button class="prev" on-tap="previousMonth">&#10094;</paper-button>
-                <paper-button class="next" on-tap="nextMonth">&#10095;</paper-button>
+            <!-- <ul>
+                <paper-icon-button class="prev" icon="caribou-datepicker-icons:chevron-left" on-tap="previousMonth"></paper-icon-button>
+                <paper-icon-button class="next" icon="caribou-datepicker-icons:chevron-right" on-tap="nextMonth"></paper-icon-button>
                 <li>
                     <paper-button>{{getMonthValue(monthTemp)}}</paper-button>
                     <br>
-                    <span style="font-size:18px">
+                    <div style="font-size:18px">
                         <paper-button on-tap="_toggleYearView">{{yearTemp}}</paper-button>
-                    </span>
+                    </div>
                 </li>
-            </ul>
+            </ul> -->
+            <div>{{yearTemp}}</div>
+            <div>{{_getDateString(date)}}</div>
+        </div>
+
+        <div id="monthNav">
+            <paper-icon-button class="prev" icon="caribou-datepicker-icons:chevron-left" on-tap="previousMonth"></paper-icon-button>
+
+            <paper-button on-tap="_toggleYearView">{{getMonthValue(monthTemp,false)}} {{yearTemp}}</paper-button>
+
+            <paper-icon-button class="next" icon="caribou-datepicker-icons:chevron-right" on-tap="nextMonth"></paper-icon-button>
         </div>
 
         <ul class="weekdays" id="weekDays">
@@ -128,6 +163,7 @@
             <li>Fr</li>
             <li>Sa</li>
         </ul>
+
         <ul class="days" id="days">
             <template is="dom-repeat" items="{{_getArrayOfDays(monthTemp,yearTemp)}}">
                 <li>
@@ -238,9 +274,34 @@
                     __daysValue: {
                         type: Array,
                         value: function () {
-                            return [
-                                "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday",
-                                "Sunday"
+                            return [{
+                                    max: "Monday",
+                                    min: "Mon"
+                                },
+                                {
+                                    max: "Tuesday",
+                                    min: "Tue"
+                                },
+                                {
+                                    max: "Wednesday",
+                                    min: "Wed"
+                                },
+                                {
+                                    max: "Thursday",
+                                    min: "Thu"
+                                },
+                                {
+                                    max: "Friday",
+                                    min: "Fri"
+                                },
+                                {
+                                    max: "Saturday",
+                                    min: "Sat"
+                                },
+                                {
+                                    max: "Sunday",
+                                    min: "Sun"
+                                }
                             ];
                         },
                         readOnly: true
@@ -249,9 +310,54 @@
                     __monthsValue: {
                         type: Array,
                         value: function () {
-                            return ["January", "February", "March", "April", "May", "June", "July",
-                                "August",
-                                "September", "October", "November", "December"
+                            return [{
+                                    max: "January",
+                                    min: "Jan"
+                                },
+                                {
+                                    max: "February",
+                                    min: "Feb"
+                                },
+                                {
+                                    max: "March",
+                                    min: "Mar"
+                                },
+                                {
+                                    max: "April",
+                                    min: "Apr"
+                                },
+                                {
+                                    max: "May",
+                                    min: "May"
+                                },
+                                {
+                                    max: "June",
+                                    min: "Jun"
+                                },
+                                {
+                                    max: "July",
+                                    min: "Jul"
+                                },
+                                {
+                                    max: "August",
+                                    min: "Aug"
+                                },
+                                {
+                                    max: "September",
+                                    min: "Sep"
+                                },
+                                {
+                                    max: "October",
+                                    min: "Oct"
+                                },
+                                {
+                                    max: "November",
+                                    min: "Nov"
+                                },
+                                {
+                                    max: "December",
+                                    min: "Dec"
+                                }
                             ];
                         },
                         readOnly: true
@@ -275,6 +381,9 @@
              * And the old date value will be removed the selected css property.
              */
             dateChanged(date, oldDate) {
+
+                this.getDayNumber();
+
                 //this is used to update the temp value when the input change.
                 this.dateTemp = date;
 
@@ -309,11 +418,6 @@
             getCurrentDate() {
                 var today = new Date();
 
-                //date
-                this.currentDate = today.getDate();
-                this.date = this.currentDate;
-                this.dateTemp = this.currentDate;
-
                 //month
                 this.currentMonth = today.getMonth();
                 this.month = this.currentMonth + 1;
@@ -329,24 +433,30 @@
                 this.day = this.currentDay;
                 this.dayTemp = this.currentDay;
 
+                //date
+                this.currentDate = today.getDate();
+                this.date = this.currentDate;
+                this.dateTemp = this.currentDate;
             }
 
             /**
              * Return the day value of the current number.
              * @param {Number} day This is the number of the day. (0-6)
+             * @param {Boolean} minValue True if we want the min value, false otherwise.
              * @return {String} The day value.
              */
-            getDayValue(day) {
-                return this.__daysValue[day];
+            getDayValue(day, minValue) {
+                return minValue ? this.__daysValue[day].min : this.__daysValue[day].max;
             }
 
             /** 
              * Return the month value of the current number. 
-             * @param {Number} day This is the number of the month. (1 to 12)  
+             * @param {Number} day This is the number of the month. (1 to 12)
+             * @param {Boolean} minValue True if we want the min value, false otherwise.
              * @return {String} The month value. 
              */
-            getMonthValue(month) {
-                return this.__monthsValue[month - 1];
+            getMonthValue(month, minValue) {
+                return minValue ? this.__monthsValue[month - 1].min : this.__monthsValue[month - 1].max;
             }
 
             /**
@@ -357,6 +467,14 @@
              */
             getNumberOfDaysInMonth(month, year) {
                 return new Date(year, month, 0).getDate();
+            }
+
+            getDayNumber() {
+                try {
+                    return new Date(year, month, date).getDay();
+                } catch (err) {
+                    console.log(err);
+                }
             }
 
             /**
@@ -408,7 +526,8 @@
                     return "active selected";
                 else if (isCurrentDay)
                     return "active"
-                else if (dateValue === this.date && this.month === this.monthTemp && this.year === this.yearTemp)
+                else if (dateValue === this.date && this.month === this.monthTemp && this.year === this
+                    .yearTemp)
                     return "selected"
             }
 
@@ -447,7 +566,17 @@
                 this.date = Number(e.currentTarget.dataset.dday);
                 this.month = this.monthTemp;
                 this.year = this.yearTemp;
-                console.log("Date selected : " + this.date + " / " + (Number(this.month) + 1) + " / " + this.year);
+                console.log("Date selected : " + this.date + " / " + (Number(this.month) + 1) + " / " +
+                    this.year);
+            }
+
+            _getDateString(date) {
+                if (this.day !== undefined)
+                    var dayString = this.getDayValue(this.day, true);
+                if (this.month !== undefined)
+                    var monthString = this.getMonthValue(this.month, true);
+
+                return dayString + ", " + monthString + " " + date;
             }
         }
 
