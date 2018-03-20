@@ -13,8 +13,8 @@
         </style>
 
         <!-- <caribou-calendar></caribou-calendar> -->
-        <caribou-month date="{{date}}" month={{month}} year="{{year}}"></caribou-month>
-        <caribou-year year="{{year}}"></caribou-year>
+        <caribou-month id="caribouMonth" date="{{date}}" month={{month}} year="{{year}}" year-temp="{{yearTemp}}"></caribou-month>
+        <caribou-year id="caribouYear" year="{{yearTemp}}" hidden></caribou-year>
     </template>
 
     <script>
@@ -50,6 +50,19 @@
 
             ready() {
                 super.ready();
+                this.$.caribouMonth.addEventListener("display-year-view", this._toggleView.bind(this));
+                this.$.caribouYear.addEventListener("year-selected", this._toggleView.bind(this));
+            }
+
+            _toggleView(e) {
+                if (e.type === "display-year-view") {
+                    this.$.caribouMonth.setAttribute("hidden", true);
+                    this.$.caribouYear.removeAttribute("hidden");
+                } else if (e.type === "year-selected") {
+                    this.$.caribouMonth.yearTemp = Number(e.detail.year);
+                    this.$.caribouYear.setAttribute("hidden", true);
+                    this.$.caribouMonth.removeAttribute("hidden");
+                }
             }
         }
 

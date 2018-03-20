@@ -8,6 +8,10 @@
                 display: block;
             }
 
+            :host([hidden]) {
+                display: none;
+            }
+
             ul {
                 list-style-type: none;
             }
@@ -91,6 +95,11 @@
 
             .days li .active {
                 padding: 5px;
+                color: #1abc9c !important;
+            }
+
+            .days li .selected {
+                padding: 5px;
                 background: #1abc9c;
                 color: white !important
             }
@@ -101,10 +110,10 @@
                 <paper-button class="prev" on-tap="previousMonth">&#10094;</paper-button>
                 <paper-button class="next" on-tap="nextMonth">&#10095;</paper-button>
                 <li>
-                    <paper-button>{{getMonthValue(month)}}</paper-button>
+                    <paper-button>{{getMonthValue(monthTemp)}}</paper-button>
                     <br>
                     <span style="font-size:18px">
-                        <paper-button on-tap="_toggleYearView">{{year}}</paper-button>
+                        <paper-button on-tap="_toggleYearView">{{yearTemp}}</paper-button>
                     </span>
                 </li>
             </ul>
@@ -120,10 +129,10 @@
             <li>Sa</li>
         </ul>
         <ul class="days" id="days">
-            <template is="dom-repeat" items="{{_getArrayOfDays(month,year)}}">
+            <template is="dom-repeat" items="{{_getArrayOfDays(monthTemp,yearTemp)}}">
                 <li>
                     <paper-button on-tap="dateSelected" data-dday$="{{item.value}}">
-                        <span class$="{{_getClassDate(item.isCurrentDay)}}">{{item.value}}</span>
+                        <span id="date{{item.value}}" class$="{{_getClassDate(item.isCurrentDay, item.value)}}">{{item.value}}</span>
                     </paper-button>
                 </li>
             </template>
@@ -146,48 +155,85 @@
 
             static get properties() {
                 return {
+
+                    hidden: {
+                        type: Boolean,
+                        value: false
+                    },
+
+                    /**
+                     * Actual year selected by the user
+                     */
                     year: {
                         type: Number,
-                        notify: true
+                        notify: true,
+                        observer: "yearChanged"
                     },
 
-                    currentYear: {
-                        type: Number
-                    },
-
+                    /**
+                     * Actual month selected by the user
+                     */
                     month: {
                         type: Number,
-                        notify: true
+                        notify: true,
+                        observer: "monthChanged"
                     },
-
-                    currentMonth: {
-                        type: Number
-                    },
-
+                    /**
+                     * Actual date selected by the user
+                     */
                     date: {
                         type: Number,
-                        notify: true
-                    },
-
-                    currentDate: {
-                        type: Number
+                        notify: true,
+                        observer: "dateChanged"
                     },
 
                     /**
                      * Sunday is 0 and monday is 1.
-                     * This is the number of the day
+                     * This is the number of the day currently selected by the user
                      */
-                    day: {
-                        type: Number
-                    },
+                    day: Number,
+
+                    /**
+                     * This is the current year of the computer
+                     */
+                    currentYear: Number,
+
+                    /**
+                     * This is the current month of the computer
+                     */
+                    currentMonth: Number,
+
+                    /**
+                     * This is the current date of the computer
+                     */
+                    currentDate: Number,
 
                     /**
                      * Sunday is 0 and monday is 1.
                      * This is the number of the current day
+                     * This is the current day of the computer
                      */
-                    currentDay: {
-                        type: Number
-                    },
+                    currentDay: Number,
+
+                    /**
+                     * This is the temporary year use for the navigation
+                     */
+                    yearTemp: Number,
+
+                    /**
+                     * This is the temporary month use for the navigation
+                     */
+                    monthTemp: Number,
+
+                    /**
+                     * This is the temporary date use for the navigation
+                     */
+                    dateTemp: Number,
+
+                    /**
+                     * This is the temporary day use for the navigation
+                     */
+                    day: Number,
 
                     __daysValue: {
                         type: Array,
@@ -209,6 +255,11 @@
                             ];
                         },
                         readOnly: true
+                    },
+
+                    showYear: {
+                        type: Boolean,
+                        value: false
                     }
                 };
             }
@@ -219,18 +270,65 @@
             }
 
             /**
+             * Observer called when the date value changed.
+             * The selected date will be flaged with the css value selected.
+             * And the old date value will be removed the selected css property.
+             */
+            dateChanged(date, oldDate) {
+                //this is used to update the temp value when the input change.
+                this.dateTemp = date;
+
+                //We do the changes for the selection.
+                var newEl = this.shadowRoot.querySelector("#date" + date);
+                var oldEl = this.shadowRoot.querySelector("#date" + oldDate);
+                if (oldEl !== null)
+                    oldEl.classList.remove("selected");
+                if (newEl !== null)
+                    newEl.classList.add("selected");
+            }
+
+            /**
+             * Observer called when the year value changed.
+             * This will update the temp value and the overlay view
+             */
+            yearChanged(year) {
+                this.yearTemp = year;
+            }
+
+            /**
+             * Observer called when the month value changed.
+             * This will update the temp value and the overlay view
+             */
+            monthChanged(month) {
+                this.monthTemp = month;
+            }
+
+            /**
              * Initialize the properties with the current values.
              */
             getCurrentDate() {
                 var today = new Date();
+
+                //date
                 this.currentDate = today.getDate();
                 this.date = this.currentDate;
+                this.dateTemp = this.currentDate;
+
+                //month
                 this.currentMonth = today.getMonth();
                 this.month = this.currentMonth + 1;
+                this.monthTemp = this.currentMonth + 1;
+
+                //year
                 this.currentYear = today.getFullYear();
                 this.year = this.currentYear;
+                this.yearTemp = this.currentYear;
+
+                //day
                 this.currentDay = today.getDay();
                 this.day = this.currentDay;
+                this.dayTemp = this.currentDay;
+
             }
 
             /**
@@ -271,41 +369,47 @@
                 return new Date(year, month - 1, 1).getDay();
             }
 
-
             _getArrayOfDays(month, year) {
-                let daysInMonth;
-                let firstDayOfWeek;
-                let daysArray = new Array();
                 if (month !== undefined && year !== undefined) {
+                    let daysInMonth;
+                    let firstDayOfWeek;
+                    let daysArray = new Array();
+                    if (month !== undefined && year !== undefined) {
+                        // Get the first day of the week.
+                        // We do -1 because we will use it 0 base.
+                        firstDayOfWeek = this.getFirstMonthDay(month, year);
+                        // Get the number of days in the month
+                        daysInMonth = this.getNumberOfDaysInMonth(month, year);
 
-                    // Get the first day of the week.
-                    // We do -1 because we will use it 0 base.
-                    firstDayOfWeek = this.getFirstMonthDay(month, year);
-                    // Get the number of days in the month
-                    daysInMonth = this.getNumberOfDaysInMonth(month, year);
+                        //day number increment
+                        let j = 0
 
-                    //day number increment
-                    let j = 0
+                        for (var i = firstDayOfWeek; i < daysInMonth + firstDayOfWeek; i++) {
+                            j = j + 1;
+                            let isCurrentDay = false;
+                            if (this.currentMonth + 1 === month && this.currentYear === year && this.currentDate ===
+                                j) {
+                                isCurrentDay = true;
+                            }
 
-                    for (var i = firstDayOfWeek; i < daysInMonth + firstDayOfWeek; i++) {
-                        j = j + 1;
-                        let isCurrentDay = false;
-                        if (this.currentMonth === month && this.currentYear === year && this.currentDate === j) {
-                            isCurrentDay = true;
+                            daysArray[i] = {
+                                value: j,
+                                isCurrentDay: isCurrentDay,
+                            };
                         }
-
-                        daysArray[i] = {
-                            value: j,
-                            isCurrentDay: isCurrentDay,
-                        };
+                        return daysArray;
                     }
-                    return daysArray;
-
                 }
             }
 
-            _getClassDate(isCurrentDay) {
-                if (isCurrentDay) return "active";
+            _getClassDate(isCurrentDay, dateValue) {
+                if (isCurrentDay && (dateValue === this.date && this.month === this.monthTemp && this.year ===
+                        this.yearTemp))
+                    return "active selected";
+                else if (isCurrentDay)
+                    return "active"
+                else if (dateValue === this.date && this.month === this.monthTemp && this.year === this.yearTemp)
+                    return "selected"
             }
 
             _getClassYear(isCurrentYear, isActiveYear) {
@@ -314,32 +418,36 @@
             }
 
             previousMonth() {
-                var prevMonth = new Date(this.year, this.month - 1, 1);
-                this.date = prevMonth.getDate();
+                var prevMonth = new Date(this.yearTemp, this.monthTemp - 1, 1);
 
-                this.month = prevMonth.getMonth() === 0 ? 12 : prevMonth.getMonth();
-                if (this.month === 12)
-                    this.year = prevMonth.getFullYear() - 1;
+                // this.month = prevMonth.getMonth() === 0 ? 12 : prevMonth.getMonth();
+                this.monthTemp = prevMonth.getMonth() === 0 ? 12 : prevMonth.getMonth();
+                if (this.monthTemp === 12)
+                    this.yearTemp = prevMonth.getFullYear() - 1;
                 else
-                    this.year = prevMonth.getFullYear();
-                this.day = prevMonth.getDay();
+                    this.yearTemp = prevMonth.getFullYear();
             }
 
             nextMonth() {
-                var nextMonth = new Date(this.year, this.month, 1);
-                this.date = nextMonth.getDate();
-                this.month = nextMonth.getMonth() + 1;
-                this.year = nextMonth.getFullYear();
-                this.day = nextMonth.getDay();
+                var nextMonth = new Date(this.yearTemp, this.monthTemp, 1);
+
+                this.monthTemp = nextMonth.getMonth() + 1;
+                this.yearTemp = nextMonth.getFullYear();
+
             }
 
             _toggleYearView() {
-                console.log("FIRE EVENT TO DISPLAY YEAR VIEW");
+                this.dispatchEvent(new CustomEvent('display-year-view', {
+                    bubbles: true,
+                    composed: true
+                }));
             }
 
             dateSelected(e) {
-                var date = e.currentTarget.dataset.dday;
-                console.log("Date selected : " + date + " / " + (Number(this.month) + 1) + " / " + this.year);
+                this.date = Number(e.currentTarget.dataset.dday);
+                this.month = this.monthTemp;
+                this.year = this.yearTemp;
+                console.log("Date selected : " + this.date + " / " + (Number(this.month) + 1) + " / " + this.year);
             }
         }
 

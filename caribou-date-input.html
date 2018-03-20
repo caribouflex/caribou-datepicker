@@ -56,9 +56,9 @@
                         notify: true,
                         type: String
                     },
-                    _date1: Number,
-                    _date2: Number,
-                    _date3: Number,
+                    _date1: String,
+                    _date2: String,
+                    _date3: String,
                     dateD: {
                         type: Number,
                         notify: true
@@ -89,27 +89,27 @@
 
             _computeValue(date1, date2, date3) {
                 if (date1 !== "" && date1 !== undefined && date1 !== null) {
-                    this.dateD = date1;
+                    this.dateD = Number(date1);
                 }
                 if (date2 !== "" && date2 !== undefined && date2 !== null) {
-                    this.dateM = date2;
+                    this.dateM = Number(date2);
                 }
                 if (date3 !== "" && date3 !== undefined && date3 !== null) {
-                    this.dateY = date3;
+                    this.dateY = Number(date3);
                 }
                 this.value = date1 + '-' + date2 + '-' + date3;
             }
 
             _setDateD(dateD) {
-                this._date1 = dateD;
+                this._date1 = dateD.toString();
             }
 
             _setDateM(dateM) {
-                this._date2 = dateM;
+                this._date2 = dateM.toString();
             }
 
             _setDateY(dateY) {
-                this._date3 = dateY;
+                this._date3 = dateY.toString();
             }
         }
 
