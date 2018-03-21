@@ -1,4 +1,5 @@
 <link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="caribou-month.html">
 <link rel="import" href="caribou-year.html">
 
@@ -8,10 +9,49 @@
             :host {
                 display: block;
             }
+
+            .header {
+                padding: 10px 0;
+                width: 100%;
+                background: #009688;
+                @apply --layout-vertical;
+            }
+
+            .header paper-button {
+                --paper-button: {
+                    display: block;
+                }
+            }
+
+            .focus {
+                color: #ffffff;
+            }
+
+            .focus-secondary {
+                color: #B2DFDB;
+            }
+
+            #fullDateValue {
+                font-size: 35px;
+                margin: 0;
+                padding: 0 30px;
+            }
+
+            #yearValue {
+                font-size: 20px;
+                margin: 0;
+                padding: 0 30px;
+            }
         </style>
 
-        <caribou-month date="{{date}}" month={{month}} year="{{year}}"></caribou-month>
-        <caribou-year year="{{year}}"></caribou-year>
+        <div class="header">
+            <paper-button noink id="yearValue" class="focus-secondary" on-tap="monthToYear">{{yearTemp}}</paper-button>
+            <paper-button noink id="fullDateValue" class="focus" on-tap="yearToMonth">{{_getDateString(date)}}</paper-button>
+        </div>
+
+        <caribou-month id="caribouMonth" date="{{date}}" month="{{month}}" day="{{day}}" year="{{year}}" year-temp="{{yearTemp}}"
+            hidden$="{{!isMonthView}}"></caribou-month>
+        <caribou-year id="caribouYear" year="{{yearTemp}}" hidden$="{{isMonthView}}"></caribou-year>
 
     </template>
 
@@ -32,14 +72,22 @@
             static get properties() {
                 return {
                     year: Number,
-                    month:Number,
-                    date:Number
+                    month: Number,
+                    date: Number,
+                    day: Number,
+
+                    isMonthView: {
+                        type: Boolean,
+                        value: true
+                    }
                 };
             }
 
             ready() {
                 super.ready();
-               // this.getCurrentDate();
+                this.$.caribouMonth.addEventListener("display-year-view", this._toggleView.bind(this));
+                this.$.caribouYear.addEventListener("year-selected", this._toggleView.bind(this));
+                // this.getCurrentDate();
             }
 
             /**
@@ -55,6 +103,32 @@
                 this.year = this.currentYear;
                 this.currentDay = today.getDay();
                 this.day = this.currentDay;
+            }
+
+            _toggleView(e) {
+                if (e.type === "year-selected") {
+                    this.yearToMonth();
+                    this.$.caribouMonth.yearTemp = Number(e.detail.year);
+                }
+            }
+
+            yearToMonth(e) {
+                if (!this.isMonthView)
+                    this.isMonthView = !this.isMonthView;
+            }
+
+            monthToYear(e) {
+                if (this.isMonthView)
+                    this.isMonthView = !this.isMonthView;
+            }
+
+            _getDateString(date) {
+                if (this.day !== undefined)
+                    var dayString = this.$.caribouMonth.getDayValue(this.day, true);
+                if (this.month !== undefined)
+                    var monthString = this.$.caribouMonth.getMonthValue(this.month, true);
+
+                return dayString + ", " + monthString + " " + date;
             }
         }
 

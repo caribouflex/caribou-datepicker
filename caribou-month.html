@@ -27,14 +27,6 @@
                 font-family: Verdana, sans-serif;
             }
 
-            /* Month header */
-
-            .month {
-                padding: 10px 0;
-                width: 100%;
-                background: #009688;
-            }
-
             .weekdays {
                 margin: 0;
                 padding: 10px 0;
@@ -106,32 +98,9 @@
                 line-height: 3;
                 @apply --layout-flex;
             }
-
-            .focus {
-                color: #ffffff;
-            }
-
-            .focus-secondary {
-                color: #B2DFDB;
-            }
-
-            #fullDateValue {
-                font-size: 35px;
-                margin: 0;
-                padding: 0 0 0 30px;
-            }
-
-            #yearValue {
-                font-size: 20px;
-                margin: 0;
-                padding: 0;
-            }
         </style>
 
-        <div class="month">
-            <paper-button id="yearValue" class="focus-secondary" on-tap="_toggleYearView">{{yearTemp}}</paper-button>
-            <div id="fullDateValue" class="focus">{{_getDateString(date)}}</div>
-        </div>
+
 
         <div id="monthNav">
             <paper-icon-button class="prev" icon="caribou-datepicker-icons:chevron-left" on-tap="previousMonth"></paper-icon-button>
@@ -154,7 +123,7 @@
         <ul class="days" id="days">
             <template is="dom-repeat" items="{{_getArrayOfDays(monthTemp,yearTemp)}}">
                 <li>
-                    <paper-button noink class="day" on-tap="dateSelected" data-dday$="{{item.value}}">
+                    <paper-button noink class="day" on-tap="_dateSelected" data-dday$="{{item.value}}">
                         <span id="date{{item.value}}" class$="{{_getClassDate(item.isCurrentDay, item.value)}}">{{item.value}}</span>
                     </paper-button>
                 </li>
@@ -214,7 +183,11 @@
                      * Sunday is 0 and monday is 1.
                      * This is the number of the day currently selected by the user
                      */
-                    day: Number,
+                    day: {
+                        type: Number,
+                        notify: true,
+                        observer: "dayChanged"
+                    },
 
                     /**
                      * This is the current year of the computer
@@ -241,7 +214,10 @@
                     /**
                      * This is the temporary year use for the navigation
                      */
-                    yearTemp: Number,
+                    yearTemp: {
+                        type: Number,
+                        notify: true
+                    },
 
                     /**
                      * This is the temporary month use for the navigation
@@ -256,12 +232,16 @@
                     /**
                      * This is the temporary day use for the navigation
                      */
-                    day: Number,
+                    dayTemp: Number,
 
                     __daysValue: {
                         type: Array,
                         value: function () {
                             return [{
+                                    max: "Sunday",
+                                    min: "Sun"
+                                },
+                                {
                                     max: "Monday",
                                     min: "Mon"
                                 },
@@ -284,10 +264,6 @@
                                 {
                                     max: "Saturday",
                                     min: "Sat"
-                                },
-                                {
-                                    max: "Sunday",
-                                    min: "Sun"
                                 }
                             ];
                         },
@@ -369,7 +345,7 @@
              */
             dateChanged(date, oldDate) {
 
-                this.getDayNumber();
+                //this.day = this.getDayNumber();
 
                 //this is used to update the temp value when the input change.
                 this.dateTemp = date;
@@ -400,10 +376,23 @@
             }
 
             /**
+             * Observer called when the month value changed.
+             * This will update the temp value and the overlay view
+             */
+            dayChanged(day) {
+                this.dayTemp = day;
+            }
+
+            /**
              * Initialize the properties with the current values.
              */
             getCurrentDate() {
                 var today = new Date();
+
+                //day
+                this.currentDay = today.getDay();
+                this.day = this.currentDay;
+                this.dayTemp = this.currentDay;
 
                 //month
                 this.currentMonth = today.getMonth();
@@ -414,11 +403,6 @@
                 this.currentYear = today.getFullYear();
                 this.year = this.currentYear;
                 this.yearTemp = this.currentYear;
-
-                //day
-                this.currentDay = today.getDay();
-                this.day = this.currentDay;
-                this.dayTemp = this.currentDay;
 
                 //date
                 this.currentDate = today.getDate();
@@ -456,9 +440,9 @@
                 return new Date(year, month, 0).getDate();
             }
 
-            getDayNumber() {
+            getDayNumber(year, month, date) {
                 try {
-                    return new Date(year, month, date).getDay();
+                    return new Date(year, month - 1, date).getDay();
                 } catch (err) {
                     console.log(err);
                 }
@@ -542,28 +526,26 @@
 
             }
 
-            _toggleYearView() {
-                this.dispatchEvent(new CustomEvent('display-year-view', {
-                    bubbles: true,
-                    composed: true
-                }));
-            }
+            // _toggleYearView() {
+            //     this.dispatchEvent(new CustomEvent('display-year-view', {
+            //         bubbles: true,
+            //         composed: true
+            //     }));
+            // }
 
-            dateSelected(e) {
-                this.date = Number(e.currentTarget.dataset.dday);
+            /**
+             * This function is called when a date is selected to set the selected parameter.
+             */
+            _dateSelected(e) {
+                // This is important to set the this.date at the end because there is value binded to it,
+                // that need that the other values are set.
+                var date = Number(e.currentTarget.dataset.dday);
                 this.month = this.monthTemp;
                 this.year = this.yearTemp;
+                this.day = this.getDayNumber(this.year, this.month, date);
+                this.date = date;
                 console.log("Date selected : " + this.date + " / " + (Number(this.month) + 1) + " / " +
                     this.year);
-            }
-
-            _getDateString(date) {
-                if (this.day !== undefined)
-                    var dayString = this.getDayValue(this.day, true);
-                if (this.month !== undefined)
-                    var monthString = this.getMonthValue(this.month, true);
-
-                return dayString + ", " + monthString + " " + date;
             }
         }
 
