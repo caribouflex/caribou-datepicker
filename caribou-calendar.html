@@ -45,8 +45,8 @@
         </style>
 
         <div class="header">
-            <paper-button noink id="yearValue" class="focus-secondary" on-tap="monthToYear">{{yearTemp}}</paper-button>
-            <paper-button noink id="fullDateValue" class="focus" on-tap="yearToMonth">{{_getDateString(date)}}</paper-button>
+            <paper-button noink id="yearValue" class$="{{_getYearFocusClass(isMonthView)}}" on-tap="monthToYear">{{yearTemp}}</paper-button>
+            <paper-button noink id="fullDateValue" class$="{{_getMonthFocusClass(isMonthView)}}" on-tap="yearToMonth">{{_getDateString(date)}}</paper-button>
         </div>
 
         <caribou-month id="caribouMonth" date="{{date}}" month="{{month}}" day="{{day}}" year="{{year}}" year-temp="{{yearTemp}}"
@@ -88,6 +88,14 @@
                 this.$.caribouMonth.addEventListener("display-year-view", this._toggleView.bind(this));
                 this.$.caribouYear.addEventListener("year-selected", this._toggleView.bind(this));
                 // this.getCurrentDate();
+            }
+
+            _getYearFocusClass(isMonthView) {
+                return isMonthView ? "focus-secondary" : "focus";
+            }
+
+            _getMonthFocusClass(isMonthView) {
+                return isMonthView ? "focus" : "focus-secondary";
             }
 
             /**

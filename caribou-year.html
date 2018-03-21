@@ -116,13 +116,7 @@
             }
 
             _mouseYearNav(e) {
-                if (e.wheelDelta >= 0) {
-                    console.log('Scroll up');
-                    this.previousYear();
-                } else {
-                    console.log('Scroll down');
-                    this.nextYear();
-                }
+                e.wheelDelta >= 0 ? this.previousYear() : this.nextYear();
             }
 
             _setYear(e) {
