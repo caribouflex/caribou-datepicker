@@ -30,53 +30,21 @@
             /* Month header */
 
             .month {
-                padding: 70px 0;
+                padding: 10px 0;
                 width: 100%;
-                background: #1abc9c;
-                text-align: center;
+                background: #009688;
             }
-
-            /* Month list */
-
-            /* .month ul {
-                margin: 0;
-                padding: 0;
-            }
-
-            .month ul li {
-                color: white;
-                font-size: 20px;
-                text-transform: uppercase;
-                letter-spacing: 3px;
-            } */
-
-            /* Previous button inside month header */
-
-            /* .month .prev {
-                float: left;
-                padding-top: 10px;
-            } */
-
-            /* Next button */
-
-            /* .month .next {
-                float: right;
-                padding-top: 10px;
-            } */
-
-            /* Weekdays
-(Mon-Sun) */
 
             .weekdays {
                 margin: 0;
                 padding: 10px 0;
-                background-color: #ddd;
+                background-color: #ffffff;
             }
 
             .weekdays li {
                 display: inline-block;
-                width: 13.5%;
-                color: #666;
+                width: 13%;
+                color: #bfbfbf;
                 text-align: center;
             }
 
@@ -84,14 +52,14 @@
 
             .days {
                 padding: 10px 0;
-                background: #eee;
+                background: #ffffff;
                 margin: 0;
             }
 
             .days li {
                 list-style-type: none;
                 display: inline-block;
-                width: 13.5%;
+                width: 13%;
                 text-align: center;
                 margin-bottom: 5px;
                 font-size: 12px;
@@ -101,55 +69,74 @@
             /* Highlight the "current" day */
 
             .days li .active {
-                color: #1abc9c !important;
+                color: #009688 !important;
             }
 
             .days li .selected {
-                background: #1abc9c;
+                background: #009688;
                 color: white !important;
                 border-radius: 50px;
             }
 
             .days li span {
-                width: 20px;
+                width: 25px;
+                height: 25px;
                 padding: 5px;
+                line-height: 25px;
             }
 
-            paper-button {
-                border-radius: 50px;
+            paper-button.day {
+                padding: 2px;
+                --paper-button: {
+                    border-radius: 25px;
+                    width: 25px;
+                    line-height: 25px;
+                }
             }
 
             #monthNav {
                 @apply --layout-horizontal;
             }
 
-            #monthNav paper-button {
+            #monthNav #monthNavValue {
                 font-size: 14px;
+                font-weight: 500px;
                 text-transform: capitalize;
+                text-align: center;
+                line-height: 3;
                 @apply --layout-flex;
+            }
+
+            .focus {
+                color: #ffffff;
+            }
+
+            .focus-secondary {
+                color: #B2DFDB;
+            }
+
+            #fullDateValue {
+                font-size: 35px;
+                margin: 0;
+                padding: 0 0 0 30px;
+            }
+
+            #yearValue {
+                font-size: 20px;
+                margin: 0;
+                padding: 0;
             }
         </style>
 
         <div class="month">
-            <!-- <ul>
-                <paper-icon-button class="prev" icon="caribou-datepicker-icons:chevron-left" on-tap="previousMonth"></paper-icon-button>
-                <paper-icon-button class="next" icon="caribou-datepicker-icons:chevron-right" on-tap="nextMonth"></paper-icon-button>
-                <li>
-                    <paper-button>{{getMonthValue(monthTemp)}}</paper-button>
-                    <br>
-                    <div style="font-size:18px">
-                        <paper-button on-tap="_toggleYearView">{{yearTemp}}</paper-button>
-                    </div>
-                </li>
-            </ul> -->
-            <div>{{yearTemp}}</div>
-            <div>{{_getDateString(date)}}</div>
+            <paper-button id="yearValue" class="focus-secondary" on-tap="_toggleYearView">{{yearTemp}}</paper-button>
+            <div id="fullDateValue" class="focus">{{_getDateString(date)}}</div>
         </div>
 
         <div id="monthNav">
             <paper-icon-button class="prev" icon="caribou-datepicker-icons:chevron-left" on-tap="previousMonth"></paper-icon-button>
 
-            <paper-button on-tap="_toggleYearView">{{getMonthValue(monthTemp,false)}} {{yearTemp}}</paper-button>
+            <div id="monthNavValue">{{getMonthValue(monthTemp,false)}} {{yearTemp}}</div>
 
             <paper-icon-button class="next" icon="caribou-datepicker-icons:chevron-right" on-tap="nextMonth"></paper-icon-button>
         </div>
@@ -167,7 +154,7 @@
         <ul class="days" id="days">
             <template is="dom-repeat" items="{{_getArrayOfDays(monthTemp,yearTemp)}}">
                 <li>
-                    <paper-button on-tap="dateSelected" data-dday$="{{item.value}}">
+                    <paper-button noink class="day" on-tap="dateSelected" data-dday$="{{item.value}}">
                         <span id="date{{item.value}}" class$="{{_getClassDate(item.isCurrentDay, item.value)}}">{{item.value}}</span>
                     </paper-button>
                 </li>
