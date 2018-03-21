@@ -1,5 +1,7 @@
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
 
 <dom-module id="caribou-year">
     <template>
@@ -12,50 +14,33 @@
                 display: none;
             }
 
-            ul {
-                list-style-type: none;
-            }
-
             .years {
-                display: -ms-flexbox;
-                display: -webkit-flex;
-                display: flex;
-                -ms-flex-direction: column;
-                -webkit-flex-direction: column;
-                flex-direction: column;
+                @apply --layout-vertical;
             }
 
-            .years li {
-                text-align: center;
-                font-size: 18px;
+            .years paper-button {
+                font-size: 15px;
             }
 
-            .years li paper-button .active {
+            .years paper-button .active {
                 padding: 5px;
                 color: #009688;
                 font-size: 25px;
             }
+
+            .iconBtnNav {
+                margin: auto;
+            }
         </style>
 
-        <ul id="years" class="years">
-            <paper-button on-tap="previousYear">
-                <svg width="25" height="25">
-                    <path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z" />
-                </svg>
-            </paper-button>
+        <div id="years" class="years">
+            <paper-icon-button class="iconBtnNav" on-tap="previousYear" icon="caribou-datepicker-icons:chevron-top"></paper-icon-button>
             <template is="dom-repeat" items="{{_getArrayOfYears(year)}}">
-                <li>
-                    <paper-button data-year$="{{item.value}}" on-tap="_setYear">
-                        <span class$="{{_getClassYear(item.isCurrentYear, item.isActiveYear)}}">{{item.value}}</span>
-                    </paper-button>
-                </li>
+                <paper-button data-year$="{{item.value}}" on-tap="_setYear">
+                    <span class$="{{_getClassYear(item.isCurrentYear, item.isActiveYear)}}">{{item.value}}</span>
+                </paper-button>
             </template>
-            <paper-button on-tap="nextYear">
-                <svg width="25" height="25">
-                    <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z" />
-                </svg>
-            </paper-button>
-        </ul>
+            <paper-icon-button class="iconBtnNav" on-tap="nextYear" icon="caribou-datepicker-icons:chevron-bottom"></paper-icon-button>
     </template>
 
     <script>
@@ -86,6 +71,7 @@
 
             ready() {
                 super.ready();
+                this.$.years.addEventListener("mousewheel", this._mouseYearNav.bind(this));
                 console.log("SET YEAR BUILT IN");
                 this.year = 2018;
 
@@ -127,6 +113,16 @@
 
             previousYear() {
                 this.year = Number(this.year) - 1;
+            }
+
+            _mouseYearNav(e) {
+                if (e.wheelDelta >= 0) {
+                    console.log('Scroll up');
+                    this.previousYear();
+                } else {
+                    console.log('Scroll down');
+                    this.nextYear();
+                }
             }
 
             _setYear(e) {
