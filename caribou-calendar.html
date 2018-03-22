@@ -7,7 +7,6 @@
     <template>
         <style>
             :host {
-                display: block;
             }
 
             .header {
@@ -15,6 +14,8 @@
                 width: 100%;
                 background: #009688;
                 @apply --layout-vertical;
+                position: fixed;
+                width: 350px;
             }
 
             .header paper-button {
@@ -42,6 +43,10 @@
                 margin: 0;
                 padding: 0 30px;
             }
+
+            .calendarBody {
+                margin-top: 86px;
+            }
         </style>
 
         <div class="header">
@@ -49,9 +54,9 @@
             <paper-button noink id="fullDateValue" class$="{{_getMonthFocusClass(isMonthView)}}" on-tap="yearToMonth">{{_getDateString(date)}}</paper-button>
         </div>
 
-        <caribou-month id="caribouMonth" date="{{date}}" month="{{month}}" day="{{day}}" year="{{year}}" year-temp="{{yearTemp}}"
+        <caribou-month id="caribouMonth" class="calendarBody" date="{{date}}" month="{{month}}" day="{{day}}" year="{{year}}" year-temp="{{yearTemp}}"
             hidden$="{{!isMonthView}}"></caribou-month>
-        <caribou-year id="caribouYear" year="{{yearTemp}}" hidden$="{{isMonthView}}"></caribou-year>
+        <caribou-year id="caribouYear" class="calendarBody" year="{{yearTemp}}" hidden$="{{isMonthView}}"></caribou-year>
 
     </template>
 

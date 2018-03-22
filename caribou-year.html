@@ -1,13 +1,17 @@
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
-<link rel="import" href="../paper-icon-button/paper-icon-button.html">
 
 <dom-module id="caribou-year">
     <template>
         <style>
             :host {
                 display: block;
+                overflow-y: auto;
+                height: 394px;
+                /*Padding added to hide the scrollbar*/
+                padding-right: 20px;
+                width: 100%;
             }
 
             :host([hidden]) {
@@ -34,13 +38,12 @@
         </style>
 
         <div id="years" class="years">
-            <paper-icon-button class="iconBtnNav" on-tap="previousYear" icon="caribou-datepicker-icons:chevron-top"></paper-icon-button>
-            <template is="dom-repeat" items="{{_getArrayOfYears(year)}}">
+            <template is="dom-repeat" items="{{years}}">
                 <paper-button data-year$="{{item.value}}" on-tap="_setYear">
                     <span class$="{{_getClassYear(item.isCurrentYear, item.isActiveYear)}}">{{item.value}}</span>
                 </paper-button>
             </template>
-            <paper-icon-button class="iconBtnNav" on-tap="nextYear" icon="caribou-datepicker-icons:chevron-bottom"></paper-icon-button>
+        </div>
     </template>
 
     <script>
@@ -65,29 +68,71 @@
 
                     currentYear: {
                         type: Number
+                    },
+
+                    years: {
+                        type: Array,
+                        value: function () {
+                            return []
+                        }
+                    },
+
+                    init: {
+                        type: Array,
+                        value: false
+                    },
+
+                    lastYear: {
+                        type: Number
+                    },
+
+                    firstYear: {
+                        type: Number
                     }
                 };
             }
 
             ready() {
                 super.ready();
+
                 this.$.years.addEventListener("mousewheel", this._mouseYearNav.bind(this));
-                console.log("SET YEAR BUILT IN");
+
+                console.log('caribou-year', "SET YEAR BUILT IN");
                 this.year = 2018;
 
+                //initialize the year view
+                this._getNextYears();
             }
 
-            _getArrayOfYears() {
-                let yearsArray = new Array();
-                yearsArray[0] = this._getYearObject(Number(this.year) - 3, false);
-                yearsArray[1] = this._getYearObject(Number(this.year) - 2, false);
-                yearsArray[2] = this._getYearObject(Number(this.year) - 1, false);
-                yearsArray[3] = this._getYearObject(Number(this.year), true);
-                yearsArray[4] = this._getYearObject(Number(this.year) + 1, false);
-                yearsArray[5] = this._getYearObject(Number(this.year) + 2, false);
-                yearsArray[6] = this._getYearObject(Number(this.year) + 3, false);
 
-                return yearsArray;
+            _getNextYears() {
+                if (this.lastYear === undefined)
+                    this.lastYear = this.year;
+
+                if (!this.init) {
+                    this.push('years', this._getYearObject(Number(this.lastYear - 3), false));
+                    this.push('years', this._getYearObject(Number(this.lastYear - 2), false));
+                    this.push('years', this._getYearObject(Number(this.lastYear - 1), false));
+                    this.push('years', this._getYearObject(Number(this.lastYear), false));
+                    this.init = true;
+                }
+
+                for (var i = 0; i < 20; i++) {
+                    this.lastYear = this.lastYear + 1;
+                    this.push('years', this._getYearObject(Number(this.lastYear), false));
+                }
+            }
+
+            _getPreviousYears() {
+                if (this.firstYear === undefined)
+                    this.firstYear = this.year - 3;
+
+                for (var i = 0; i < 20; i++) {
+                    this.firstYear = this.firstYear - 1;
+                    this.splice("years", 0, 0, this._getYearObject(Number(this.firstYear), false));
+                }
+
+                this.scrollTop = 600;
             }
 
             _getYearObject(year, isActiveYear) {
@@ -107,16 +152,21 @@
                 if (isCurrentYear) return "current";
             }
 
-            nextYear() {
-                this.year = Number(this.year) + 1;
-            }
+            // nextYear() {
+            //     this.year = Number(this.year) + 1;
+            // }
 
-            previousYear() {
-                this.year = Number(this.year) - 1;
-            }
+            // previousYear() {
+            //     this.year = Number(this.year) - 1;
+            // }
 
             _mouseYearNav(e) {
-                e.wheelDelta >= 0 ? this.previousYear() : this.nextYear();
+                //e.wheelDelta >= 0  go to top otherwise go to bottom
+                if (e.wheelDelta >= 0 && this.scrollTop === 0) {
+                    this._getPreviousYears();
+                } else if (this.scrollTop + this.clientHeight >= this.scrollHeight) {
+                    this._getNextYears();
+                }
             }
 
             _setYear(e) {
@@ -128,7 +178,7 @@
                     }
                 }));
                 this.year = e.currentTarget.dataset.year;
-                console.log("Year selected : " + this.year);
+                console.log("caribou-year", "Year selected : " + this.year);
             }
         }
 
