@@ -6,9 +6,6 @@
 <dom-module id="caribou-calendar">
     <template>
         <style>
-            :host {
-            }
-
             .header {
                 padding: 10px 0;
                 width: 100%;
@@ -47,6 +44,19 @@
             .calendarBody {
                 margin-top: 86px;
             }
+
+            .actionButtons {
+                bottom: 0;
+                position: absolute;
+                width: 100%;
+                @apply --layout-horizontal;
+                color: #009688;
+                font-weight: 500;
+            }
+
+            #flex {
+                @apply --layout-flex;
+            }
         </style>
 
         <div class="header">
@@ -58,6 +68,12 @@
             hidden$="{{!isMonthView}}"></caribou-month>
         <caribou-year id="caribouYear" class="calendarBody" year="{{yearTemp}}" hidden$="{{isMonthView}}"></caribou-year>
 
+        <div class="actionButtons">
+            <paper-button on-tap="getCurrentDate">Today</paper-button>
+            <div id="flex"></div>
+            <paper-button on-tap="_fireCloseOverlay">Cancel</paper-button>
+            <paper-button on-tap="_validSelection">Ok</paper-button>
+        </div>
     </template>
 
     <script>
@@ -92,7 +108,7 @@
                 super.ready();
                 this.$.caribouMonth.addEventListener("display-year-view", this._toggleView.bind(this));
                 this.$.caribouYear.addEventListener("year-selected", this._toggleView.bind(this));
-                // this.getCurrentDate();
+                this.getCurrentDate();
             }
 
             _getYearFocusClass(isMonthView) {
@@ -105,17 +121,17 @@
 
             /**
              * Initialize the properties with the current values.
+             * The order for the initialization is important, the date has to be the last one initialized.
              */
             getCurrentDate() {
                 var today = new Date();
-                this.currentDate = today.getDate();
-                this.date = this.currentDate;
-                this.currentMonth = today.getMonth();
-                this.month = this.currentMonth;
-                this.currentYear = today.getFullYear();
-                this.year = this.currentYear;
-                this.currentDay = today.getDay();
-                this.day = this.currentDay;
+                // this.day = today.getDay();
+                // this.month = today.getMonth() + 1;
+                // this.year = today.getFullYear();
+                // this.date = today.getDate();
+
+                this.$.caribouMonth.setDate(today.getDay(), today.getDate(), today.getMonth() + 1, today.getFullYear());
+                this.$.caribouYear.setYear(today.getFullYear());
             }
 
             _toggleView(e) {
@@ -142,6 +158,14 @@
                     var monthString = this.$.caribouMonth.getMonthValue(this.month, true);
 
                 return dayString + ", " + monthString + " " + date;
+            }
+
+            _fireCloseOverlay() {
+                //TODO
+            }
+
+            _validSelection() {
+                //TODO
             }
         }
 

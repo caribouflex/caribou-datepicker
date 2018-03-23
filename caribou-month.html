@@ -43,7 +43,7 @@
             /* Days (1-31) */
 
             .days {
-                padding: 10px 0;
+                padding: 0;
                 background: #ffffff;
                 margin: 0;
             }
@@ -62,6 +62,7 @@
 
             .days li .active {
                 color: #009688 !important;
+                font-weight: 500;
             }
 
             .days li .selected {
@@ -92,7 +93,7 @@
 
             #monthNav #monthNavValue {
                 font-size: 14px;
-                font-weight: 500px;
+                font-weight: 500;
                 text-transform: capitalize;
                 text-align: center;
                 line-height: 3;
@@ -121,9 +122,9 @@
         </ul>
 
         <ul class="days" id="days">
-            <template is="dom-repeat" items="{{_getArrayOfDays(monthTemp,yearTemp)}}">
+            <template is="dom-repeat" items="{{_getArrayOfDays(monthTemp,yearTemp,dateTemp)}}">
                 <li>
-                    <paper-button noink class="day" on-tap="_dateSelected" data-dday$="{{item.value}}">
+                    <paper-button hidden$="{{!item.isValid}}" noink class="day" on-tap="_dateSelected" data-dday$="{{item.value}}">
                         <span id="date{{item.value}}" class$="{{_getClassDate(item.isCurrentDay, item.value)}}">{{item.value}}</span>
                     </paper-button>
                 </li>
@@ -335,7 +336,6 @@
 
             ready() {
                 super.ready();
-                this.getCurrentDate();
             }
 
             /**
@@ -344,9 +344,6 @@
              * And the old date value will be removed the selected css property.
              */
             dateChanged(date, oldDate) {
-
-                //this.day = this.getDayNumber();
-
                 //this is used to update the temp value when the input change.
                 this.dateTemp = date;
 
@@ -384,30 +381,41 @@
             }
 
             /**
-             * Initialize the properties with the current values.
+             * Initialize the properties with the current date time.
              */
             getCurrentDate() {
                 var today = new Date();
+                this.setDateValues(today.getDay(), today.getDate(), today.getMonth() + 1, today.getFullYear());
+            }
 
+            /**
+             * This function is used to set the current date.
+             * This is used to intialize all the date parameter.
+             * @param {Number} day The number of the day of the week
+             * @param {Number} date The number of the day
+             * @param {Number} month The number of the month
+             * @param {Number} year The number of the year
+             */
+            setDate(day, date, month, year) {
                 //day
-                this.currentDay = today.getDay();
+                this.currentDay = day;
                 this.day = this.currentDay;
-                this.dayTemp = this.currentDay;
+                // this.dayTemp = this.currentDay;
 
                 //month
-                this.currentMonth = today.getMonth();
-                this.month = this.currentMonth + 1;
-                this.monthTemp = this.currentMonth + 1;
+                this.currentMonth = month;
+                this.month = this.currentMonth;
+                // this.monthTemp = this.currentMonth + 1;
 
                 //year
-                this.currentYear = today.getFullYear();
+                this.currentYear = year;
                 this.year = this.currentYear;
-                this.yearTemp = this.currentYear;
+                // this.yearTemp = this.currentYear;
 
                 //date
-                this.currentDate = today.getDate();
+                this.currentDate = date;
                 this.date = this.currentDate;
-                this.dateTemp = this.currentDate;
+                // this.dateTemp = this.currentDate;
             }
 
             /**
@@ -458,8 +466,8 @@
                 return new Date(year, month - 1, 1).getDay();
             }
 
-            _getArrayOfDays(month, year) {
-                if (month !== undefined && year !== undefined) {
+            _getArrayOfDays(month, year, date) {
+                if (month !== undefined && year !== undefined && date != undefined) {
                     let daysInMonth;
                     let firstDayOfWeek;
                     let daysArray = new Array();
@@ -476,7 +484,7 @@
                         for (var i = firstDayOfWeek; i < daysInMonth + firstDayOfWeek; i++) {
                             j = j + 1;
                             let isCurrentDay = false;
-                            if (this.currentMonth + 1 === month && this.currentYear === year && this.currentDate ===
+                            if (this.currentMonth === month && this.currentYear === year && this.currentDate ===
                                 j) {
                                 isCurrentDay = true;
                             }
@@ -484,8 +492,16 @@
                             daysArray[i] = {
                                 value: j,
                                 isCurrentDay: isCurrentDay,
+                                isValid: true
                             };
                         }
+
+                        for (var i = 0; i < firstDayOfWeek; i++) {
+                            daysArray[i] = {
+                                isValid: false
+                            };
+                        }
+
                         return daysArray;
                     }
                 }
@@ -544,7 +560,8 @@
                 this.year = this.yearTemp;
                 this.day = this.getDayNumber(this.year, this.month, date);
                 this.date = date;
-                console.log("Date selected : " + this.date + " / " + (Number(this.month) + 1) + " / " +
+                console.log("caribou-month", "Date selected : " + this.date + " / " + (Number(this.month) + 1) +
+                    " / " +
                     this.year);
             }
         }
