@@ -52,6 +52,7 @@
                 @apply --layout-horizontal;
                 color: #009688;
                 font-weight: 500;
+                background: #ffffff;
             }
 
             #flex {
@@ -69,7 +70,7 @@
         <caribou-year id="caribouYear" class="calendarBody" year="{{yearTemp}}" hidden$="{{isMonthView}}"></caribou-year>
 
         <div class="actionButtons">
-            <paper-button on-tap="getCurrentDate">Today</paper-button>
+            <paper-button on-tap="getCurrentDate" hidden$="{{_isTodayDateBtnHidden(isMonthView,todayButtonHidden)}}">Today</paper-button>
             <div id="flex"></div>
             <paper-button on-tap="_fireCloseOverlay">Cancel</paper-button>
             <paper-button on-tap="_validSelection">Ok</paper-button>
@@ -100,6 +101,11 @@
                     isMonthView: {
                         type: Boolean,
                         value: true
+                    },
+
+                    todayButtonHidden: {
+                        type: Boolean,
+                        value: false
                     }
                 };
             }
@@ -158,6 +164,10 @@
                     var monthString = this.$.caribouMonth.getMonthValue(this.month, true);
 
                 return dayString + ", " + monthString + " " + date;
+            }
+
+            _isTodayDateBtnHidden(isMonthView, btnHidden){
+                return (!isMonthView || btnHidden);
             }
 
             _fireCloseOverlay() {

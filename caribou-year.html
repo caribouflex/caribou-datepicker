@@ -39,7 +39,7 @@
 
         <div id="years" class="years">
             <template is="dom-repeat" items="{{years}}">
-                <paper-button data-year$="{{item.value}}" on-tap="_setYear">
+                <paper-button data-year$="{{item.value}}" on-tap="_yearSelected">
                     <span class$="{{_getClassYear(item.isCurrentYear)}}">{{item.value}}</span>
                 </paper-button>
             </template>
@@ -103,7 +103,8 @@
 
             setYear(year) {
                 this.currentYear = year;
-                this.year = this.currentYear;
+                this.year = year;
+                this.lastYear = year;
                 this.initYearArray();
             }
 
@@ -176,15 +177,13 @@
                 }
             }
 
-            _setYear(e) {
-                this.year = Number(e.currentTarget.dataset.year);
+            _yearSelected(e) {
+                //set the last year as the year selected before redraw the array
+                this.setYear(Number(e.currentTarget.dataset.year));
+
                 console.log("caribou-year", "Year selected : " + this.year);
 
-                //set the last year as the year selected before redraw the array
-                this.lastYear = this.year;
-                this.currentYear = this.year;
-                this.initYearArray();
-
+                //The scroll year view has to be set to the top
                 this.scrollTop = 0;
 
                 // The event has to be sent after the scrollTop otherwise the scroll will never happened
