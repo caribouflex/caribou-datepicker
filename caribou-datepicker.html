@@ -29,7 +29,7 @@
     </style>
 
     <paper-input-container always-float-label auto-validate attr-for-value="value">
-      <label slot="label">Date</label>
+      <label slot="label">{{inputLabel}}</label>
       <caribou-date-input class="paper-input-input" slot="input" date-d="{{date}}" date-m="{{month}}" date-y="{{year}}"></caribou-date-input>
       <paper-icon-button id="calendarIcon" slot="suffix" on-tap="open" icon="caribou-datepicker-icons:calendar"></paper-icon-button>
       <paper-input-error slot="add-on">Error!</paper-input-error>
@@ -60,25 +60,55 @@
 
       static get properties() {
         return {
+          inputLabel: {
+            type: String,
+            value: "Date"
+          },
+
           date: Number,
           month: Number,
           year: Number,
+
+          closePickerOnDateSelection: {
+            type: Boolean,
+            value: false
+          },
+
+          setInputOnDateSelection: {
+            type: Boolean,
+            value: false
+          }
         }
       }
 
       ready() {
         super.ready();
         this.$.datepickerOverlay.addEventListener("date-selected", this._setDateInput.bind(this));
+        this.$.datepickerOverlay.addEventListener("ok-selected", this._setDateInput.bind(this));
+        this.$.datepickerOverlay.addEventListener("close-overlay", this.closeOverlay.bind(this));
       }
 
       open() {
-        this.$.dropdown.open()
+        this.$.dropdown.open();
       }
 
       _setDateInput(e) {
+
+        if (e.type == "date-selected" && !this.closePickerOnDateSelection && !this.setInputOnDateSelection)
+          return;
+
         this.date = e.detail.date;
         this.month = e.detail.month;
         this.year = e.detail.year;
+
+        if (e.type == "date-selected" && !this.closePickerOnDateSelection)
+          return;
+
+        this.closeOverlay();
+      }
+
+      closeOverlay() {
+        this.$.dropdown.close();
       }
 
     }

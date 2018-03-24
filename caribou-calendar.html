@@ -131,10 +131,6 @@
              */
             getCurrentDate() {
                 var today = new Date();
-                // this.day = today.getDay();
-                // this.month = today.getMonth() + 1;
-                // this.year = today.getFullYear();
-                // this.date = today.getDate();
 
                 this.$.caribouMonth.setDate(today.getDay(), today.getDate(), today.getMonth() + 1, today.getFullYear());
                 this.$.caribouYear.setYear(today.getFullYear());
@@ -166,16 +162,27 @@
                 return dayString + ", " + monthString + " " + date;
             }
 
-            _isTodayDateBtnHidden(isMonthView, btnHidden){
+            _isTodayDateBtnHidden(isMonthView, btnHidden) {
                 return (!isMonthView || btnHidden);
             }
 
             _fireCloseOverlay() {
-                //TODO
+                this.dispatchEvent(new CustomEvent('close-overlay', {
+                    bubbles: true,
+                    composed: true
+                }));
             }
 
             _validSelection() {
-                //TODO
+                this.dispatchEvent(new CustomEvent('ok-selected', {
+                    detail: {
+                        date: this.date,
+                        month: this.month,
+                        year: this.year
+                    },
+                    bubbles: true,
+                    composed: true
+                }));
             }
         }
 
