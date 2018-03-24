@@ -62,7 +62,7 @@
 
         <div class="header">
             <paper-button noink id="yearValue" class$="{{_getYearFocusClass(isMonthView)}}" on-tap="monthToYear">{{yearTemp}}</paper-button>
-            <paper-button noink id="fullDateValue" class$="{{_getMonthFocusClass(isMonthView)}}" on-tap="yearToMonth">{{_getDateString(date)}}</paper-button>
+            <paper-button noink id="fullDateValue" class$="{{_getMonthFocusClass(isMonthView)}}" on-tap="yearToMonth">{{_getDateString(date,month)}}</paper-button>
         </div>
 
         <caribou-month id="caribouMonth" class="calendarBody" date="{{date}}" month="{{month}}" day="{{day}}" year="{{year}}" year-temp="{{yearTemp}}"

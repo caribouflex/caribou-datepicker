@@ -34,10 +34,10 @@
       <paper-icon-button id="calendarIcon" slot="suffix" on-tap="open" icon="caribou-datepicker-icons:calendar"></paper-icon-button>
       <paper-input-error slot="add-on">Error!</paper-input-error>
     </paper-input-container>
-  
+
     <iron-dropdown id="dropdown">
       <div slot="dropdown-content">
-        <caribou-datepicker-overlay date="{{date}}" month="{{month}}" year="{{year}}"></caribou-datepicker-overlay>
+        <caribou-datepicker-overlay id="datepickerOverlay" date="[[date]]" month="[[month]]" year="[[year]]"></caribou-datepicker-overlay>
       </div>
     </iron-dropdown>
 
@@ -59,15 +59,26 @@
       }
 
       static get properties() {
-        return {}
+        return {
+          date: Number,
+          month: Number,
+          year: Number,
+        }
       }
 
       ready() {
         super.ready();
+        this.$.datepickerOverlay.addEventListener("date-selected", this._setDateInput.bind(this));
       }
 
       open() {
         this.$.dropdown.open()
+      }
+
+      _setDateInput(e) {
+        this.date = e.detail.date;
+        this.month = e.detail.month;
+        this.year = e.detail.year;
       }
 
     }

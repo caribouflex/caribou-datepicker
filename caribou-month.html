@@ -560,6 +560,16 @@
                 this.year = this.yearTemp;
                 this.day = this.getDayNumber(this.year, this.month, date);
                 this.date = date;
+
+                this.dispatchEvent(new CustomEvent('date-selected', {
+                    detail: {
+                        date: this.date,
+                        month: this.month,
+                        year: this.year
+                    },
+                    bubbles: true,
+                    composed: true
+                }));
                 console.log("caribou-month", "Date selected : " + this.date + " / " + (Number(this.month) + 1) +
                     " / " +
                     this.year);
