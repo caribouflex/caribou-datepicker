@@ -1,15 +1,11 @@
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../paper-input/paper-input-container.html">
 <link rel="import" href="../paper-input/paper-input-error.html">
-<link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../iron-dropdown/iron-dropdown.html">
 <link rel="import" href="caribou-date-input.html">
 <link rel="import" href="caribou-datepicker-custom-icons.html">
 <link rel="import" href="caribou-datepicker-overlay.html">
-<link rel="import" href="caribou-calendar.html">
-
-
 
 <dom-module id="caribou-datepicker">
   <template>
@@ -22,17 +18,13 @@
         border-radius: 3px;
         box-shadow: 0px 2px 6px #ccc;
       }
-
-      /* #calendarIcon {
-        --iron-icon-fill-color: #1abc9c;
-      } */
     </style>
 
-    <paper-input-container always-float-label auto-validate attr-for-value="value">
+    <paper-input-container id="inputContainer" always-float-label attr-for-value="value" invalid="{{invalid}}">
       <label slot="label">{{inputLabel}}</label>
       <caribou-date-input class="paper-input-input" slot="input" date-d="{{date}}" date-m="{{month}}" date-y="{{year}}"></caribou-date-input>
       <paper-icon-button id="calendarIcon" slot="suffix" on-tap="open" icon="caribou-datepicker-icons:calendar"></paper-icon-button>
-      <paper-input-error slot="add-on">Error!</paper-input-error>
+      <paper-input-error slot="add-on">{{inputError}}</paper-input-error>
     </paper-input-container>
 
     <iron-dropdown id="dropdown">
@@ -65,6 +57,17 @@
             value: "Date"
           },
 
+          inputError: {
+            type: String,
+            value: "Error !"
+          },
+
+          invalid: {
+            type: Boolean,
+            value: false,
+            observer: "catch"
+          },
+
           date: Number,
           month: Number,
           year: Number,
@@ -86,6 +89,12 @@
         this.$.datepickerOverlay.addEventListener("date-selected", this._setDateInput.bind(this));
         this.$.datepickerOverlay.addEventListener("ok-selected", this._setDateInput.bind(this));
         this.$.datepickerOverlay.addEventListener("close-overlay", this.closeOverlay.bind(this));
+        this.$.datepickerOverlay.addEventListener("date-error", this._setError.bind(this));
+
+      }
+
+      catch (e) {
+        console.log(e);
       }
 
       open() {
@@ -109,6 +118,11 @@
 
       closeOverlay() {
         this.$.dropdown.close();
+      }
+
+      _setError(e) {
+        this.invalid = true;
+        this.inputError = e.detail.message;
       }
 
     }

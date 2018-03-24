@@ -330,6 +330,21 @@
                     showYear: {
                         type: Boolean,
                         value: false
+                    },
+
+                    yearError: {
+                        type: Boolean,
+                        value: False
+                    },
+
+                    dateError: {
+                        type: Boolean,
+                        value: False
+                    },
+
+                    monthError: {
+                        type: Boolean,
+                        value: False
                     }
                 };
             }
@@ -425,7 +440,10 @@
              * @return {String} The day value.
              */
             getDayValue(day, minValue) {
-                return minValue ? this.__daysValue[day].min : this.__daysValue[day].max;
+                if (day > 0)
+                    return minValue ? this.__daysValue[day].min : this.__daysValue[day].max;
+                else
+                    this._dispatchErrorEvent("Invalid day value");
             }
 
             /** 
@@ -435,7 +453,10 @@
              * @return {String} The month value. 
              */
             getMonthValue(month, minValue) {
-                return minValue ? this.__monthsValue[month - 1].min : this.__monthsValue[month - 1].max;
+                if (month >= 0)
+                    return minValue ? this.__monthsValue[month - 1].min : this.__monthsValue[month - 1].max;
+                else
+                    this._dispatchErrorEvent("Invalid month value");
             }
 
             /**
@@ -574,6 +595,8 @@
                     " / " +
                     this.year);
             }
+
+            
         }
 
         window.customElements.define(CaribouMonthElement.is, CaribouMonthElement);

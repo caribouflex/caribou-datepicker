@@ -66,7 +66,7 @@
         </div>
 
         <caribou-month id="caribouMonth" class="calendarBody" date="{{date}}" month="{{month}}" day="{{day}}" year="{{year}}" year-temp="{{yearTemp}}"
-            hidden$="{{!isMonthView}}"></caribou-month>
+            hidden$="{{!isMonthView}}" month-error="{{monthError}}" year-error="{{yearError}}" date-error="{{dateError}}"></caribou-month>
         <caribou-year id="caribouYear" class="calendarBody" year="{{yearTemp}}" hidden$="{{isMonthView}}"></caribou-year>
 
         <div class="actionButtons">
@@ -106,8 +106,18 @@
                     todayButtonHidden: {
                         type: Boolean,
                         value: false
-                    }
+                    },
+
+                    monthError: Boolean,
+                    yearError: Boolean,
+                    dateError: Boolean
                 };
+            }
+
+            static get observers() {
+                return [
+                    '_fireError(monthError,yearError,dateError)'
+                ]
             }
 
             ready() {
@@ -115,6 +125,19 @@
                 this.$.caribouMonth.addEventListener("display-year-view", this._toggleView.bind(this));
                 this.$.caribouYear.addEventListener("year-selected", this._toggleView.bind(this));
                 this.getCurrentDate();
+            }
+
+            _fireError() {
+
+                if (monthError || yearError || dateError) {
+                    this.dispatchEvent(new CustomEvent('date-error', {
+                        detail: {
+                            message: errorMessage
+                        },
+                        bubbles: true,
+                        composed: true
+                    }));
+                }
             }
 
             _getYearFocusClass(isMonthView) {
