@@ -95,10 +95,9 @@
             ready() {
                 super.ready();
 
-                this.$.years.addEventListener("mousewheel", this._mouseYearNav.bind(this));
-
-                // console.log('caribou-year', "SET YEAR BUILT IN");
-                // this.year = 2018;
+                this.$.years.addEventListener("mousewheel", this._mouseYearNav.bind(this), {
+                    passive: true
+                });
             }
 
             setYear(year) {
