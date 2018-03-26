@@ -75,6 +75,11 @@
                     validator: {
                         type: String,
                         value: 'ssn-validator'
+                    },
+                    invalidDate: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
                     }
                 }
             }
@@ -89,6 +94,15 @@
             }
 
             _computeValue(date1, date2, date3) {
+
+                var date = new Date(date3, date2 - 1, date1);
+                if (date3 < 1900 || !date || (date.getMonth() + 1) != date2) {
+                    this.invalidDate = true;
+                    return;
+                } else
+                    this.invalidDate = false;
+
+
                 if (date1 !== "" && date1 !== undefined && date1 !== null) {
                     this.dateD = Number(date1);
                 }

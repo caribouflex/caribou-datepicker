@@ -330,21 +330,6 @@
                     showYear: {
                         type: Boolean,
                         value: false
-                    },
-
-                    yearError: {
-                        type: Boolean,
-                        value: False
-                    },
-
-                    dateError: {
-                        type: Boolean,
-                        value: False
-                    },
-
-                    monthError: {
-                        type: Boolean,
-                        value: False
                     }
                 };
             }
@@ -443,7 +428,7 @@
                 if (day > 0)
                     return minValue ? this.__daysValue[day].min : this.__daysValue[day].max;
                 else
-                    this._dispatchErrorEvent("Invalid day value");
+                    console.error("Invalid day : " + day);
             }
 
             /** 
@@ -456,7 +441,7 @@
                 if (month >= 0)
                     return minValue ? this.__monthsValue[month - 1].min : this.__monthsValue[month - 1].max;
                 else
-                    this._dispatchErrorEvent("Invalid month value");
+                    console.error("Invalid month : " + month);
             }
 
             /**
@@ -473,7 +458,7 @@
                 try {
                     return new Date(year, month - 1, date).getDay();
                 } catch (err) {
-                    console.log(err);
+                    console.error("Invalid day");
                 }
             }
 
@@ -563,15 +548,10 @@
 
             }
 
-            // _toggleYearView() {
-            //     this.dispatchEvent(new CustomEvent('display-year-view', {
-            //         bubbles: true,
-            //         composed: true
-            //     }));
-            // }
-
             /**
              * This function is called when a date is selected to set the selected parameter.
+             * @param {Object} e The event object.
+             * @private
              */
             _dateSelected(e) {
                 // This is important to set the this.date at the end because there is value binded to it,
@@ -591,12 +571,7 @@
                     bubbles: true,
                     composed: true
                 }));
-                console.log("caribou-month", "Date selected : " + this.date + " / " + (Number(this.month) + 1) +
-                    " / " +
-                    this.year);
             }
-
-            
         }
 
         window.customElements.define(CaribouMonthElement.is, CaribouMonthElement);

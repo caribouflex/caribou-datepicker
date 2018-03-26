@@ -20,9 +20,10 @@
       }
     </style>
 
-    <paper-input-container id="inputContainer" always-float-label attr-for-value="value" invalid="{{invalid}}">
+    <paper-input-container id="inputContainer" always-float-label attr-for-value="value" invalid="[[invalid]]">
       <label slot="label">{{inputLabel}}</label>
-      <caribou-date-input class="paper-input-input" slot="input" date-d="{{date}}" date-m="{{month}}" date-y="{{year}}"></caribou-date-input>
+      <caribou-date-input class="paper-input-input" slot="input" invalid-date="{{invalid}}" date-d="{{date}}" date-m="{{month}}"
+        date-y="{{year}}"></caribou-date-input>
       <paper-icon-button id="calendarIcon" slot="suffix" on-tap="open" icon="caribou-datepicker-icons:calendar"></paper-icon-button>
       <paper-input-error slot="add-on">{{inputError}}</paper-input-error>
     </paper-input-container>
@@ -59,13 +60,12 @@
 
           inputError: {
             type: String,
-            value: "Error !"
+            value: "Invalid date"
           },
 
           invalid: {
             type: Boolean,
-            value: false,
-            observer: "catch"
+            value: false
           },
 
           date: Number,
@@ -89,12 +89,6 @@
         this.$.datepickerOverlay.addEventListener("date-selected", this._setDateInput.bind(this));
         this.$.datepickerOverlay.addEventListener("ok-selected", this._setDateInput.bind(this));
         this.$.datepickerOverlay.addEventListener("close-overlay", this.closeOverlay.bind(this));
-        this.$.datepickerOverlay.addEventListener("date-error", this._setError.bind(this));
-
-      }
-
-      catch (e) {
-        console.log(e);
       }
 
       open() {
@@ -119,12 +113,6 @@
       closeOverlay() {
         this.$.dropdown.close();
       }
-
-      _setError(e) {
-        this.invalid = true;
-        this.inputError = e.detail.message;
-      }
-
     }
 
     window.customElements.define(CaribouDatepicker.is, CaribouDatepicker);
