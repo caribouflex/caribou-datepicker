@@ -9,7 +9,8 @@
             .header {
                 padding: 10px 0;
                 width: 100%;
-                background: #009688;
+                background: var(--header-overlay-background-color, var(--primary-color));
+                /*#009688*/
                 @apply --layout-vertical;
                 position: fixed;
                 width: 350px;
@@ -26,7 +27,8 @@
             }
 
             .focus-secondary {
-                color: #B2DFDB;
+                color: var(--header-text-secondary-color, var(--light-primary-color));
+                /*#B2DFDB;*/
             }
 
             #fullDateValue {
@@ -50,7 +52,7 @@
                 position: absolute;
                 width: 100%;
                 @apply --layout-horizontal;
-                color: #009688;
+                color: var(--action-button-color, var(--primary-color));
                 font-weight: 500;
                 background: #ffffff;
             }

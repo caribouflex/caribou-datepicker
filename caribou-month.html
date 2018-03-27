@@ -61,12 +61,12 @@
             /* Highlight the "current" day */
 
             .days li .active {
-                color: #009688 !important;
+                color: var(--current-active-day-color, var(--primary-color)) !important;
                 font-weight: 500;
             }
 
             .days li .selected {
-                background: #009688;
+                background: var(--current-selected-day-color, var(--primary-color));
                 color: white !important;
                 border-radius: 50px;
             }
