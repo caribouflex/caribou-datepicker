@@ -360,24 +360,37 @@
              * Observer called when the year value changed.
              * This will update the temp value and the overlay view
              */
-            yearChanged(year) {
-                this.yearTemp = year;
+            yearChanged(newYear, oldYear) {
+                if (newYear < 1900) {
+                    this.year = oldYear;
+                    return;
+                }
+
+                this.yearTemp = newYear;
             }
 
             /**
              * Observer called when the month value changed.
              * This will update the temp value and the overlay view
              */
-            monthChanged(month) {
-                this.monthTemp = month;
+            monthChanged(newMonth, oldMonth) {
+                if (newMonth > 12 || newMonth < 1) {
+                    this.month = oldMonth;
+                    return;
+                }
+                this.monthTemp = newMonth;
             }
 
             /**
              * Observer called when the month value changed.
              * This will update the temp value and the overlay view
              */
-            dayChanged(day) {
-                this.dayTemp = day;
+            dayChanged(newDay, oldDay) {
+                if (newDay > 31 || newDay < 1) {
+                    this.day = oldDay;
+                    return;
+                }
+                this.dayTemp = newDay;
             }
 
             /**

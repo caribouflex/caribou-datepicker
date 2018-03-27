@@ -23,7 +23,7 @@
     <paper-input-container id="inputContainer" always-float-label attr-for-value="value" invalid="[[invalid]]">
       <label slot="label">{{inputLabel}}</label>
       <caribou-date-input class="paper-input-input" slot="input" invalid-date="{{invalid}}" date-d="{{date}}" date-m="{{month}}"
-        date-y="{{year}}"></caribou-date-input>
+        date-y="{{year}}" format="[[dateFormat]]"></caribou-date-input>
       <paper-icon-button id="calendarIcon" slot="suffix" on-tap="open" icon="caribou-datepicker-icons:calendar"></paper-icon-button>
       <paper-input-error slot="add-on">{{inputError}}</paper-input-error>
     </paper-input-container>
@@ -80,6 +80,19 @@
           setInputOnDateSelection: {
             type: Boolean,
             value: false
+          },
+
+          /**
+           * This is the format of the date for the input.
+           * Possible values : 
+           *  - DMY
+           *  - YMD
+           *  - MDY
+           */
+          dateFormat: {
+            type: String,
+            value: "DMY",
+            notify: true
           }
         }
       }

@@ -29,20 +29,51 @@
             }
         </style>
 
-        <!-- <ssn-validator></ssn-validator> -->
-        <div class="container">
-            <iron-input bind-value="{{_date1}}" aria-label="2 digits of the Date">
-                <input maxlength="2" size="2" type="number">
-            </iron-input>
-            /
-            <iron-input bind-value="{{_date2}}" aria-label="2 digits of the Month">
-                <input maxlength="2" size="2" type="number">
-            </iron-input>
-            /
-            <iron-input bind-value="{{_date3}}" aria-label="4 digits of the Year">
-                <input maxlength="4" size="4" type="number">
-            </iron-input>
-        </div>
+        <template is="dom-if" if="{{__isDMY}}">
+            <div class="container">
+                <iron-input bind-value="{{dateD}}" aria-label="2 digits of the Date">
+                    <input max="31" min="1" size="2" type="number" placeholder="DD">
+                </iron-input>
+                /
+                <iron-input bind-value="{{dateM}}" aria-label="2 digits of the Month">
+                    <input max="12" min="1" size="2" type="number" placeholder="MM">
+                </iron-input>
+                /
+                <iron-input bind-value="{{dateY}}" aria-label="4 digits of the Year">
+                    <input min="1900" size="4" type="number" placeholder="YYYY">
+                </iron-input>
+            </div>
+        </template>
+        <template is="dom-if" if="{{__isYMD}}">
+            <div class="container">
+                <iron-input bind-value="{{dateY}}" aria-label="4 digits of the Year">
+                    <input min="1900" size="4" type="number" placeholder="YYYY">
+                </iron-input>
+                /
+                <iron-input bind-value="{{dateM}}" aria-label="2 digits of the Month">
+                    <input max="12" min="1" size="2" type="number" placeholder="MM">
+                </iron-input>
+                /
+                <iron-input bind-value="{{dateD}}" aria-label="2 digits of the Date">
+                    <input max="31" min="1" size="2" type="number" placeholder="DD">
+                </iron-input>
+            </div>
+        </template>
+        <template is="dom-if" if="{{__isMDY}}">
+            <div class="container">
+                <iron-input bind-value="{{dateM}}" aria-label="2 digits of the Month">
+                    <input max="12" min="1" size="2" type="number" placeholder="MM">
+                </iron-input>
+                /
+                <iron-input bind-value="{{dateD}}" aria-label="2 digits of the Date">
+                    <input max="31" min="1" size="2" type="number" placeholder="DD">
+                </iron-input>
+                /
+                <iron-input bind-value="{{dateY}}" aria-label="4 digits of the Year">
+                    <input min="1900" size="4" type="number" placeholder="YYYY">
+                </iron-input>
+            </div>
+        </template>
     </template>
 
     <script>
@@ -53,13 +84,6 @@
 
             static get properties() {
                 return {
-                    value: {
-                        notify: true,
-                        type: String
-                    },
-                    _date1: String,
-                    _date2: String,
-                    _date3: String,
                     dateD: {
                         type: Number,
                         notify: true
@@ -80,51 +104,83 @@
                         type: Boolean,
                         value: false,
                         notify: true
+                    },
+
+                    /**
+                     * This is the format of the date for the input.
+                     * Possible values : 
+                     *  - DMY
+                     *  - YMD
+                     *  - MDY
+                     */
+                    format: {
+                        type: String,
+                        value: "DMY",
+                        observer: "_initFormat"
+                    },
+
+                    __isDMY: {
+                        type: Boolean,
+                        value: false,
+                        readOnly: true
+                    },
+
+                    __isYMD: {
+                        type: Boolean,
+                        value: false,
+                        readOnly: true
+                    },
+
+                    __isMDY: {
+                        type: Boolean,
+                        value: false,
+                        readOnly: true
                     }
                 }
             }
 
             static get observers() {
                 return [
-                    '_computeValue(_date1,_date2,_date3)',
-                    '_setDateD(dateD)',
-                    '_setDateM(dateM)',
-                    '_setDateY(dateY)'
+                    "_computeValue(dateD, dateM, dateY)"
                 ];
             }
 
-            _computeValue(date1, date2, date3) {
+            _computeValue(dateD, dateM, dateY) {
+                if (dateD !== undefined && dateM !== undefined && dateY !== undefined) {
+                    this._validDate();
+                }
+            }
 
-                var date = new Date(date3, date2 - 1, date1);
-                if (date3 < 1900 || !date || (date.getMonth() + 1) != date2) {
+            _validDate() {
+                var date = new Date(this.dateY, this.dateM - 1, this.dateD);
+                if (this.dateY < 1900 || !date || (date.getMonth() + 1) != this.dateM) {
                     this.invalidDate = true;
-                    return;
                 } else
                     this.invalidDate = false;
 
-
-                if (date1 !== "" && date1 !== undefined && date1 !== null) {
-                    this.dateD = Number(date1);
-                }
-                if (date2 !== "" && date2 !== undefined && date2 !== null) {
-                    this.dateM = Number(date2);
-                }
-                if (date3 !== "" && date3 !== undefined && date3 !== null) {
-                    this.dateY = Number(date3);
-                }
-                this.value = date1 + '-' + date2 + '-' + date3;
+                return this.invalidDate;
             }
 
-            _setDateD(dateD) {
-                this._date1 = dateD.toString();
-            }
-
-            _setDateM(dateM) {
-                this._date2 = dateM.toString();
-            }
-
-            _setDateY(dateY) {
-                this._date3 = dateY.toString();
+            _initFormat(format) {
+                switch (format) {
+                    case "DMY":
+                        this._set__isDMY(true);
+                        this._set__isYMD(false);
+                        this._set__isMDY(false);
+                        break;
+                    case "YMD":
+                        this._set__isYMD(true);
+                        this._set__isDMY(false);
+                        this._set__isMDY(false);
+                        break;
+                    case "MDY":
+                        this._set__isMDY(true);
+                        this._set__isYMD(false);
+                        this._set__isDMY(false);
+                        break;
+                    default:
+                        this.format = "DMY";
+                }
             }
         }
 
