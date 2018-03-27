@@ -374,7 +374,7 @@
              * This will update the temp value and the overlay view
              */
             monthChanged(newMonth, oldMonth) {
-                if (newMonth > 12 || newMonth < 1) {
+                if (newMonth > 12 || newMonth < 1 || isNaN(newMonth)) {
                     this.month = oldMonth;
                     return;
                 }
@@ -386,7 +386,7 @@
              * This will update the temp value and the overlay view
              */
             dayChanged(newDay, oldDay) {
-                if (newDay > 31 || newDay < 1) {
+                if (newDay > 31 || newDay < 1 || isNaN(newDay)) {
                     this.day = oldDay;
                     return;
                 }
@@ -438,7 +438,7 @@
              * @return {String} The day value.
              */
             getDayValue(day, minValue) {
-                if (day > 0)
+                if (day > 0 && day < 32)
                     return minValue ? this.__daysValue[day].min : this.__daysValue[day].max;
                 else
                     console.error("Invalid day : " + day);
@@ -451,7 +451,7 @@
              * @return {String} The month value. 
              */
             getMonthValue(month, minValue) {
-                if (month >= 0)
+                if (month > 0 && month < 13)
                     return minValue ? this.__monthsValue[month - 1].min : this.__monthsValue[month - 1].max;
                 else
                     console.error("Invalid month : " + month);

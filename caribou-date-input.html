@@ -31,11 +31,11 @@
 
         <template is="dom-if" if="{{__isDMY}}">
             <div class="container">
-                <iron-input bind-value="{{dateD}}" aria-label="2 digits of the Date">
+                <iron-input bind-value="{{_sDateD}}" aria-label="2 digits of the Date">
                     <input max="31" min="1" size="2" type="number" placeholder="DD">
                 </iron-input>
                 /
-                <iron-input bind-value="{{dateM}}" aria-label="2 digits of the Month">
+                <iron-input bind-value="{{_sDateM}}" aria-label="2 digits of the Month">
                     <input max="12" min="1" size="2" type="number" placeholder="MM">
                 </iron-input>
                 /
@@ -50,22 +50,22 @@
                     <input min="1900" size="4" type="number" placeholder="YYYY">
                 </iron-input>
                 /
-                <iron-input bind-value="{{dateM}}" aria-label="2 digits of the Month">
+                <iron-input bind-value="{{_sDateM}}" aria-label="2 digits of the Month">
                     <input max="12" min="1" size="2" type="number" placeholder="MM">
                 </iron-input>
                 /
-                <iron-input bind-value="{{dateD}}" aria-label="2 digits of the Date">
+                <iron-input bind-value="{{_sDateD}}" aria-label="2 digits of the Date">
                     <input max="31" min="1" size="2" type="number" placeholder="DD">
                 </iron-input>
             </div>
         </template>
         <template is="dom-if" if="{{__isMDY}}">
             <div class="container">
-                <iron-input bind-value="{{dateM}}" aria-label="2 digits of the Month">
+                <iron-input bind-value="{{_sDateM}}" aria-label="2 digits of the Month">
                     <input max="12" min="1" size="2" type="number" placeholder="MM">
                 </iron-input>
                 /
-                <iron-input bind-value="{{dateD}}" aria-label="2 digits of the Date">
+                <iron-input bind-value="{{_sDateD}}" aria-label="2 digits of the Date">
                     <input max="31" min="1" size="2" type="number" placeholder="DD">
                 </iron-input>
                 /
@@ -84,13 +84,26 @@
 
             static get properties() {
                 return {
+                    _sDateD: {
+                        type: String,
+                        observer: "_setDateD"
+                    },
+                    _sDateM: {
+                        type: String,
+                        observer: "_setDateM"
+                    },
+                    _sDateY: {
+                        type: String
+                    },
                     dateD: {
                         type: Number,
-                        notify: true
+                        notify: true,
+                        observer: "_set_sDateD"
                     },
                     dateM: {
                         type: Number,
-                        notify: true
+                        notify: true,
+                        observer: "_set_sDateM"
                     },
                     dateY: {
                         type: Number,
@@ -181,6 +194,22 @@
                     default:
                         this.format = "DMY";
                 }
+            }
+
+            _setDateD(value) {
+                this.dateD = Number(value);
+            }
+
+            _setDateM(value) {
+                this.dateM = Number(value);
+            }
+
+            _set_sDateD(value) {
+                this._sDateD = (value < 10 ? '0' : '') + value;
+            }
+
+            _set_sDateM(value) {
+                this._sDateM = (value < 10 ? '0' : '') + value;
             }
         }
 
