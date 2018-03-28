@@ -119,13 +119,31 @@
     <script>
         /**
          * `caribou-datepicker`
-         * Polymer 2 element used to select a date picker following material design.
+         * This element contain the `caribou-month` and the `caribou-year` element.
+         * This component is used to set the view inside the overlay.
+         * It will contain the header with the date, the action buttons and can work separately.
+         * It can be used in another element different from the `caribou-datepicker`.
          *
          * @customElement
          * @polymer
          * @demo demo/index.html
          */
         class CaribouCalendarElement extends Polymer.Element {
+
+            /**
+             * Fired when the stepper is finished and all the steps are saved.
+             *
+             * @event close-overlay
+             * @param {Object} detail empty
+             */
+
+            /**
+             * Fired when the stepper is finished and all the steps are saved.
+             *
+             * @event ok-selected
+             * @param {Object} detail { date: 1, month: 1, year: 2018 }
+             */
+
             static get is() {
                 return 'caribou-calendar';
             }
@@ -133,27 +151,30 @@
             static get properties() {
                 return {
                     /**
-                     *
+                     * This is the year value
                      */
                     year: Number,
 
                     /**
-                     *
+                     * This is the month value
+                     * 1-12
                      */
                     month: Number,
 
                     /**
-                     *
+                     * This is the date value
                      */
                     date: Number,
 
                     /**
-                     *
+                     * This is the day value
+                     * 0-6
                      */
                     day: Number,
 
                     /**
-                     *
+                     * This is used to intialize the view.
+                     * It will be vertical by default
                      */
                     horizontal: {
                         type: Boolean,
@@ -162,7 +183,8 @@
                     },
 
                     /**
-                     *
+                     * This is used to indicate which view is displayed.
+                     * If false this is the year view that is displayed.
                      */
                     isMonthView: {
                         type: Boolean,
@@ -170,7 +192,7 @@
                     },
 
                     /**
-                     *
+                     * This is used to hide the today button
                      */
                     todayButtonHidden: {
                         type: Boolean,
@@ -187,7 +209,9 @@
             }
 
             /**
-             * @param {} 
+             * This function is used to set the class to the year header button.
+             * This will indicate which button should be focused.
+             * @param {Boolean} isMonthView
              * @private
              */
             _getYearFocusClass(isMonthView) {
@@ -195,7 +219,9 @@
             }
 
             /**
-             * @param {} 
+             * This function is used to set the class to the month header button.
+             * This will indicate which button should be focused.
+             * @param {Boolean} isMonthView
              * @private
              */
             _getMonthFocusClass(isMonthView) {
@@ -214,7 +240,8 @@
             }
 
             /**
-             * @param {} 
+             * this is used to toggle the view between month and year
+             * @param {Object} e The event object 
              * @private
              */
             _toggleView(e) {
@@ -225,7 +252,8 @@
             }
 
             /**
-             * @param {} 
+             * This is used to change the flag used to switch the view
+             * @param {Object} e The event object 
              */
             yearToMonth(e) {
                 if (!this.isMonthView)
@@ -233,7 +261,8 @@
             }
 
             /**
-             * @param {} 
+             * This is used to change the flag used to switch the view
+             * @param {Object} e The event object 
              */
             monthToYear(e) {
                 if (this.isMonthView)
@@ -241,7 +270,8 @@
             }
 
             /**
-             * @param {} 
+             * Return the date in string used in the header
+             * @param {Number} date The date value 
              * @private
              */
             _getDateString(date) {
@@ -254,8 +284,9 @@
             }
 
             /**
-             * @param {} 
-             * @param {} 
+             * return true if the today button should be hidden
+             * @param {Boolean} isMonthView
+             * @param {Boolean} btnHidden
              * @private
              */
             _isTodayDateBtnHidden(isMonthView, btnHidden) {
@@ -263,6 +294,7 @@
             }
 
             /**
+             * Dispatch an event when the overlay is closed.
              * @private
              */
             _fireCloseOverlay() {
@@ -273,6 +305,8 @@
             }
 
             /**
+             * Dispatch an event when the ok button is selected
+             * We pass the date values in the event.
              * @private
              */
             _validSelection() {

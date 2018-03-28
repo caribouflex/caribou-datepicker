@@ -120,7 +120,7 @@
             type: String,
             value: "Invalid date"
           },
-          
+
           /**
            * True if the date is invalid.
            * False otherwise
@@ -137,6 +137,7 @@
 
           /**
            * The month value
+           * 1-12
            */
           month: Number,
 
@@ -203,7 +204,7 @@
         this.$.datepickerOverlay.addEventListener("ok-selected", this._setDateInput.bind(this));
         this.$.datepickerOverlay.addEventListener("close-overlay", this.closeOverlay.bind(this));
       }
-      
+
       /**
        * This function is used to open the overlay. 
        */
@@ -225,7 +226,7 @@
 
         this.closeOverlay();
       }
-      
+
 
       _setCurrentDate(initWithCurrentDate) {
         if (initWithCurrentDate && this.date === undefined && this.month === undefined && this.year === undefined) {

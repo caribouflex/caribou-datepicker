@@ -86,7 +86,7 @@
                 }
             }
 
-            paper-button:focus{
+            paper-button:focus {
                 font-weight: 400;
             }
 
@@ -152,12 +152,10 @@
             static get properties() {
                 return {
 
+                    /**
+                     * Used to hide the component.
+                     */
                     hidden: {
-                        type: Boolean,
-                        value: false
-                    },
-
-                    horizontal: {
                         type: Boolean,
                         value: false
                     },
@@ -173,6 +171,7 @@
 
                     /**
                      * Actual month selected by the user
+                     * 1-12
                      */
                     month: {
                         type: Number,
@@ -243,6 +242,11 @@
                      */
                     dayTemp: Number,
 
+                    /**
+                     * This is the array of week days name.
+                     * There is the long name and the short name.
+                     * @private
+                     */
                     __daysValue: {
                         type: Array,
                         value: function () {
@@ -279,6 +283,11 @@
                         readOnly: true
                     },
 
+                    /**
+                     * This is the array of week month name.
+                     * There is the long name and the short name.
+                     * @private
+                     */
                     __monthsValue: {
                         type: Array,
                         value: function () {
@@ -333,11 +342,6 @@
                             ];
                         },
                         readOnly: true
-                    },
-
-                    showYear: {
-                        type: Boolean,
-                        value: false
                     }
                 };
             }
@@ -475,6 +479,13 @@
                 return new Date(year, month, 0).getDate();
             }
 
+            /**
+             * Return the day number of the date
+             * @param {Number} year The year number
+             * @param {Number} month The month number
+             * @param {Number} date The date number
+             * @return {Number} The day number
+             */
             getDayNumber(year, month, date) {
                 try {
                     return new Date(year, month - 1, date).getDay();
@@ -493,6 +504,13 @@
                 return new Date(year, month - 1, 1).getDay();
             }
 
+            /**
+             * Return the array of day object used to complete the view
+             * @param {Number} year The year number
+             * @param {Number} month The month number
+             * @param {Number} date The date number
+             * @return {Array} The array of day object
+             */
             _getArrayOfDays(month, year, date) {
                 if (month !== undefined && year !== undefined && date != undefined) {
                     let daysInMonth;
@@ -534,6 +552,12 @@
                 }
             }
 
+            /**
+             * Return the class String value of the selected and active date.
+             * @param {Boolean} isCurrentDay 
+             * @param {Number} dateValue The date number
+             * @return {Array} The array of day object
+             */
             _getClassDate(isCurrentDay, dateValue) {
                 if (isCurrentDay && (dateValue === this.date && this.month === this.monthTemp && this.year ===
                         this.yearTemp))
@@ -545,11 +569,9 @@
                     return "selected"
             }
 
-            _getClassYear(isCurrentYear, isActiveYear) {
-                if (isActiveYear) return "active";
-                if (isCurrentYear) return "current";
-            }
-
+            /**
+             * Used to recover the previous month and switch the view.
+             */
             previousMonth() {
                 var prevMonth = new Date(this.yearTemp, this.monthTemp - 1, 1);
 
@@ -561,6 +583,9 @@
                     this.yearTemp = prevMonth.getFullYear();
             }
 
+            /**
+             * Used to recover the next month and switch the view.
+             */
             nextMonth() {
                 var nextMonth = new Date(this.yearTemp, this.monthTemp, 1);
 
