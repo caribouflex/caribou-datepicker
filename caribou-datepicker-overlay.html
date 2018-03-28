@@ -27,7 +27,7 @@
          *
          * @customElement
          * @polymer
-         * @demo demo/index.html
+         * @element caribou-datepicker-overlay
          */
         class CaribouDatepickerOverlayElement extends Polymer.Element {
             static get is() {
@@ -36,18 +36,33 @@
 
             static get properties() {
                 return {
+                    /**
+                     * Year value
+                     */
                     year: {
                         type: Number,
                         notify: true
                     },
+
+                    /**
+                     * Month value
+                     */
                     month: {
                         type: Number,
                         notify: true
                     },
+
+                    /**
+                     * date value
+                     */
                     date: {
                         type: Number,
                         notify: true
                     },
+
+                    /**
+                     * True if horizontal false otherwise.
+                     */
                     horizontal: {
                         type: Boolean,
                         value: false,

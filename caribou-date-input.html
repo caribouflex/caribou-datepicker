@@ -1,7 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-input/iron-input.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
-<!-- <link rel="import" href="ssn-validator.html"> -->
 
 <dom-module id="caribou-date-input">
     <template>
@@ -77,6 +76,20 @@
     </template>
 
     <script>
+        /**
+         * `caribou-date-input`
+         *
+         * This element is a single line text field following the material design, used to display a date.
+         *
+         * This allow you to set the format of the input : DMY, YMD, MDY
+         * ```html
+         * <caribou-date-input date-format="YMD"></caribou-date-input>
+         * ```
+         * 
+         * @customElement
+         * @polymer
+         * @element caribou-date-input
+         */
         class CaribouDateInput extends Polymer.mixinBehaviors([Polymer.IronValidatableBehavior], Polymer.Element) {
             static get is() {
                 return 'caribou-date-input';
@@ -84,35 +97,62 @@
 
             static get properties() {
                 return {
+
+                    /**
+                     * This is string date that will be inserted into the input.
+                     * All the number under 10 will be preceded by a 0. (ex: 01)
+                     */
                     _sDateD: {
                         type: String,
                         observer: "_setDateD"
                     },
+
+                    /**
+                     * This is string month that will be inserted into the input.
+                     * All the number under 10 will be preceded by a 0. (ex: 01)
+                     */
                     _sDateM: {
                         type: String,
                         observer: "_setDateM"
                     },
+
+                    /**
+                     * This is string year that will be inserted into the input.
+                     */
                     _sDateY: {
                         type: String
                     },
+
+                    /**
+                     * This is the real date number value
+                     */
                     dateD: {
                         type: Number,
                         notify: true,
                         observer: "_set_sDateD"
                     },
+
+                    /**
+                     * This is the real month number value
+                     */
                     dateM: {
                         type: Number,
                         notify: true,
                         observer: "_set_sDateM"
                     },
+
+                    /**
+                     * This is the real year number value
+                     */
                     dateY: {
                         type: Number,
                         notify: true
                     },
-                    validator: {
-                        type: String,
-                        value: 'ssn-validator'
-                    },
+
+                    /**
+                     * True if the date is invalid.
+                     * False otherwise
+                     */
                     invalidDate: {
                         type: Boolean,
                         value: false,
@@ -132,18 +172,27 @@
                         observer: "_initFormat"
                     },
 
+                    /**
+                     * Property used to display the view DD/MM/YYYY
+                     */
                     __isDMY: {
                         type: Boolean,
                         value: false,
                         readOnly: true
                     },
 
+                    /**
+                     *  Property used to display the view YYYY/MM/DD
+                     */
                     __isYMD: {
                         type: Boolean,
                         value: false,
                         readOnly: true
                     },
 
+                    /**
+                     *  Property used to display the view MM/DD/YYYY
+                     */
                     __isMDY: {
                         type: Boolean,
                         value: false,
@@ -158,12 +207,24 @@
                 ];
             }
 
+            /**
+             * Observer function called to valide the date everytime the input change
+             * @param {Number} dateD The date
+             * @param {Number} dateM The month
+             * @param {Number} dateY The year
+             * @private
+             */
             _computeValue(dateD, dateM, dateY) {
                 if (dateD !== undefined && dateM !== undefined && dateY !== undefined) {
                     this._validDate();
                 }
             }
 
+            /**
+             * Function called to valide the date
+             * @return {Boolean} True if valid false otherwise
+             * @private
+             */
             _validDate() {
                 var date = new Date(this.dateY, this.dateM - 1, this.dateD);
                 if (this.dateY < 1900 || !date || (date.getMonth() + 1) != this.dateM) {
@@ -174,6 +235,11 @@
                 return this.invalidDate;
             }
 
+            /**
+             * Init the view
+             * @param {String} format The string format
+             * @private
+             */
             _initFormat(format) {
                 switch (format) {
                     case "DMY":
@@ -196,18 +262,38 @@
                 }
             }
 
+            /**
+             * Observer function used to init the date value when the input value change
+             * @param {String} value The input date value
+             * @private
+             */
             _setDateD(value) {
                 this.dateD = Number(value);
             }
 
+            /**
+             * Observer function used to init the date value when the input value change
+             * @param {String} value The input month value
+             * @private
+             */
             _setDateM(value) {
                 this.dateM = Number(value);
             }
 
+            /**
+             * Observer function used to init the string date value when the real selected date change
+             * @param {String} value The date value
+             * @private
+             */
             _set_sDateD(value) {
                 this._sDateD = (value < 10 ? '0' : '') + value;
             }
 
+            /**
+             * Observer function used to init the string month value when the real selected month change
+             * @param {String} value The month value
+             * @private
+             */
             _set_sDateM(value) {
                 this._sDateM = (value < 10 ? '0' : '') + value;
             }

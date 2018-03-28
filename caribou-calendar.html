@@ -132,22 +132,46 @@
 
             static get properties() {
                 return {
+                    /**
+                     *
+                     */
                     year: Number,
+
+                    /**
+                     *
+                     */
                     month: Number,
+
+                    /**
+                     *
+                     */
                     date: Number,
+
+                    /**
+                     *
+                     */
                     day: Number,
 
+                    /**
+                     *
+                     */
                     horizontal: {
                         type: Boolean,
                         value: false,
                         reflectToAttribute: true
                     },
 
+                    /**
+                     *
+                     */
                     isMonthView: {
                         type: Boolean,
                         value: true
                     },
 
+                    /**
+                     *
+                     */
                     todayButtonHidden: {
                         type: Boolean,
                         value: false
@@ -162,10 +186,18 @@
                 this.getCurrentDate();
             }
 
+            /**
+             * @param {} 
+             * @private
+             */
             _getYearFocusClass(isMonthView) {
                 return isMonthView ? "focus-secondary" : "focus";
             }
 
+            /**
+             * @param {} 
+             * @private
+             */
             _getMonthFocusClass(isMonthView) {
                 return isMonthView ? "focus" : "focus-secondary";
             }
@@ -181,6 +213,10 @@
                 this.$.caribouYear.setYear(today.getFullYear());
             }
 
+            /**
+             * @param {} 
+             * @private
+             */
             _toggleView(e) {
                 if (e.type === "year-selected") {
                     this.yearToMonth();
@@ -188,16 +224,26 @@
                 }
             }
 
+            /**
+             * @param {} 
+             */
             yearToMonth(e) {
                 if (!this.isMonthView)
                     this.isMonthView = !this.isMonthView;
             }
 
+            /**
+             * @param {} 
+             */
             monthToYear(e) {
                 if (this.isMonthView)
                     this.isMonthView = !this.isMonthView;
             }
 
+            /**
+             * @param {} 
+             * @private
+             */
             _getDateString(date) {
                 if (this.day !== undefined)
                     var dayString = this.$.caribouMonth.getDayValue(this.day, true);
@@ -207,10 +253,18 @@
                 return dayString + ", " + monthString + " " + date;
             }
 
+            /**
+             * @param {} 
+             * @param {} 
+             * @private
+             */
             _isTodayDateBtnHidden(isMonthView, btnHidden) {
                 return (!isMonthView || btnHidden);
             }
 
+            /**
+             * @private
+             */
             _fireCloseOverlay() {
                 this.dispatchEvent(new CustomEvent('close-overlay', {
                     bubbles: true,
@@ -218,6 +272,9 @@
                 }));
             }
 
+            /**
+             * @private
+             */
             _validSelection() {
                 this.dispatchEvent(new CustomEvent('ok-selected', {
                     detail: {

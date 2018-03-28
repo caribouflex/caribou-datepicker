@@ -48,28 +48,48 @@
 
     <script>
         /**
-         * `caribou-datepicker`
-         * Polymer 2 element used to select a date picker following material design.
+         * `caribou-year`
          *
+         * This element is used to select the year.
+         * 
          * @customElement
          * @polymer
-         * @demo demo/index.html
+         * @element caribou-date-input
          */
         class CaribouYearElement extends Polymer.Element {
+
+            /**
+             * Fired when the stepper is finished and all the steps are saved.
+             *
+             * @event year-selected
+             * @param {Object} detail {year:2015}
+             */
+
             static get is() {
                 return 'caribou-year';
             }
 
             static get properties() {
                 return {
+                    /**
+                     * This is the current year or year selected.
+                     * This year will appear selecte in the view.
+                     */
                     year: {
                         type: Number
                     },
 
+                    /**
+                     * May be deprecated... TODO check
+                     * 
+                     */
                     currentYear: {
                         type: Number
                     },
 
+                    /**
+                     * This is the years array used to display the list
+                     */
                     years: {
                         type: Array,
                         value: function () {
@@ -77,15 +97,26 @@
                         }
                     },
 
-                    init: {
+                    /**
+                     * This is a flag used during the creation of the array
+                     */
+                    _init: {
                         type: Array,
                         value: false
                     },
 
+                    /**
+                     * This is the last year added to the array.
+                     * This is used when we add more values.
+                     */
                     lastYear: {
                         type: Number
                     },
 
+                    /**
+                     * This is the first year of the array
+                     * Used when we get the previous years
+                     */
                     firstYear: {
                         type: Number
                     }
@@ -100,6 +131,10 @@
                 });
             }
 
+            /**
+             * This function is used to initialize the array when the year change
+             * @param {Number} year The year value
+             */
             setYear(year) {
                 this.currentYear = year;
                 this.year = year;
@@ -112,7 +147,7 @@
              */
             initYearArray() {
                 this.splice("years", 0, this.years.length);
-                this.init = false;
+                this._init = false;
                 this._createYears();
             }
 
@@ -126,12 +161,12 @@
                 if (this.lastYear === undefined)
                     this.lastYear = this.year;
 
-                if (!this.init) {
+                if (!this._init) {
                     this.push('years', this._getYearObject(Number(this.lastYear - 3)));
                     this.push('years', this._getYearObject(Number(this.lastYear - 2)));
                     this.push('years', this._getYearObject(Number(this.lastYear - 1)));
                     this.push('years', this._getYearObject(Number(this.lastYear)));
-                    this.init = true;
+                    this._init = true;
                 }
 
                 for (var i = 0; i < 10; i++) {
@@ -140,6 +175,10 @@
                 }
             }
 
+            /**
+             * Complete the array with a couple of years added to the begining of the array.
+             * @private
+             */
             _getPreviousYears() {
                 if (this.firstYear === undefined)
                     this.firstYear = this.year - 3;
@@ -152,6 +191,11 @@
                 this.scrollTop = 600;
             }
 
+            /**
+             * This is used to init the style
+             * @param {Number} year
+             * @private 
+             */
             _getYearObject(year) {
                 let isCurrentYear = false;
                 if (this.currentYear === year)
@@ -163,10 +207,21 @@
                 };
             }
 
+            /**
+             * This is used to the the class for the style
+             * @param {Boolean} isCurrentYear
+             * @private
+             */
             _getClassYear(isCurrentYear) {
                 if (isCurrentYear) return "current";
             }
 
+            /**
+             * This is a callback function used when the scroll from the mouse is executed.
+             * this will get the previous or the next years.
+             * @param {Object} e the event
+             * @private
+             */
             _mouseYearNav(e) {
                 //e.wheelDelta >= 0  go to top otherwise go to bottom
                 if (e.wheelDelta >= 0 && this.scrollTop === 0) {
@@ -176,6 +231,12 @@
                 }
             }
 
+            /**
+             * This is used when a year is selected. 
+             * An event will be dispatch.
+             * @param {Object} e the event
+             * @private
+             */
             _yearSelected(e) {
                 //set the last year as the year selected before redraw the array
                 this.setYear(Number(e.currentTarget.dataset.year));
