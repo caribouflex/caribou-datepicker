@@ -15,14 +15,12 @@
 
   <custom-style>
     <style is="custom-style" include="demo-pages-shared-styles">
-      caribou-datepicker{
-        --header-overlay-background-color: red;
+      /* --header-overlay-background-color: red;
         --header-text-secondary-color: blue;
         --action-button-color: yellow;
         --current-active-day-color: green;
         --current-selected-day-color: purple;
-        --current-selected-year-color: magenta;
-      }
+        --current-selected-year-color: magenta; */
     </style>
   </custom-style>
 </head>
@@ -34,8 +32,8 @@
       <template>
         <caribou-datepicker input-label="Date (classic)"></caribou-datepicker>
         <caribou-datepicker date-format="YMD" input-label="Date (setinputOnDateSelection)" set-input-on-date-selection></caribou-datepicker>
-        <caribou-datepicker date-format="MDY" input-label="Date (closePickerOnDateSelection + setinputOnDateSelection)" close-picker-on-date-selection
-          set-input-on-date-selection></caribou-datepicker>
+        <caribou-datepicker horizontal date-format="MDY" input-label="Date (closePickerOnDateSelection + setinputOnDateSelection)"
+          close-picker-on-date-selection set-input-on-date-selection></caribou-datepicker>
       </template>
     </demo-snippet>
   </div>

@@ -12,7 +12,6 @@
             :host {
                 display: block;
                 overflow: hidden;
-                width: 100%;
             }
 
             :host([hidden]) {
@@ -29,7 +28,7 @@
 
             .weekdays {
                 margin: 0;
-                padding: 10px 0;
+                padding: var(--weekdays-padding, 10px 0);
                 background-color: #ffffff;
             }
 
@@ -53,19 +52,18 @@
                 display: inline-block;
                 width: 13%;
                 text-align: center;
-                margin-bottom: 5px;
                 font-size: 12px;
                 color: #777;
             }
 
             /* Highlight the "current" day */
 
-            .days li .active {
+            .days li.active {
                 color: var(--current-active-day-color, var(--primary-color)) !important;
                 font-weight: 500;
             }
 
-            .days li .selected {
+            .days li.selected {
                 background: var(--current-selected-day-color, var(--primary-color));
                 color: white !important;
                 border-radius: 50px;
@@ -80,11 +78,16 @@
 
             paper-button.day {
                 padding: 2px;
+                min-width: 20px;
                 --paper-button: {
                     border-radius: 25px;
                     width: 25px;
                     line-height: 25px;
                 }
+            }
+
+            paper-button:focus{
+                font-weight: 400;
             }
 
             #monthNav {
@@ -112,20 +115,20 @@
         </div>
 
         <ul class="weekdays" id="weekDays">
-            <li>Su</li>
-            <li>Mo</li>
-            <li>Tu</li>
-            <li>We</li>
-            <li>Th</li>
-            <li>Fr</li>
-            <li>Sa</li>
+            <li>S</li>
+            <li>M</li>
+            <li>T</li>
+            <li>W</li>
+            <li>T</li>
+            <li>F</li>
+            <li>S</li>
         </ul>
 
         <ul class="days" id="days">
             <template is="dom-repeat" items="{{_getArrayOfDays(monthTemp,yearTemp,dateTemp)}}">
-                <li>
+                <li class$="{{_getClassDate(item.isCurrentDay, item.value)}}">
                     <paper-button hidden$="{{!item.isValid}}" noink class="day" on-tap="_dateSelected" data-dday$="{{item.value}}">
-                        <span id="date{{item.value}}" class$="{{_getClassDate(item.isCurrentDay, item.value)}}">{{item.value}}</span>
+                        <span id="date{{item.value}}">{{item.value}}</span>
                     </paper-button>
                 </li>
             </template>
@@ -150,6 +153,11 @@
                 return {
 
                     hidden: {
+                        type: Boolean,
+                        value: false
+                    },
+
+                    horizontal: {
                         type: Boolean,
                         value: false
                     },

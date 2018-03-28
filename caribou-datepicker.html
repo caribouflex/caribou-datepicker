@@ -18,7 +18,6 @@
         border-radius: 3px;
         box-shadow: 0px 2px 6px #ccc;
       }
-
     </style>
 
     <paper-input-container id="inputContainer" always-float-label attr-for-value="value" invalid="[[invalid]]">
@@ -31,7 +30,7 @@
 
     <iron-dropdown id="dropdown">
       <div slot="dropdown-content">
-        <caribou-datepicker-overlay id="datepickerOverlay" date="[[date]]" month="[[month]]" year="[[year]]"></caribou-datepicker-overlay>
+        <caribou-datepicker-overlay id="datepickerOverlay" horizontal="[[horizontal]]" date="[[date]]" month="[[month]]" year="[[year]]"></caribou-datepicker-overlay>
       </div>
     </iron-dropdown>
 
@@ -94,6 +93,11 @@
             type: String,
             value: "DMY",
             notify: true
+          },
+
+          horizontal: {
+            type: Boolean,
+            value: false
           }
         }
       }

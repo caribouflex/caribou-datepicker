@@ -6,20 +6,32 @@
 <dom-module id="caribou-calendar">
     <template>
         <style>
+            :host([horizontal]) {
+                @apply --layout-horizontal;
+            }
+
             .header {
                 padding: 10px 0;
-                width: 100%;
                 background: var(--header-overlay-background-color, var(--primary-color));
                 /*#009688*/
                 @apply --layout-vertical;
                 position: fixed;
-                width: 350px;
+                width: 330px;
             }
 
             .header paper-button {
                 --paper-button: {
                     display: block;
                 }
+            }
+
+            .header paper-button:focus {
+                font-weight: 400;
+            }
+
+            :host([horizontal]) .header {
+                width: 160px;
+                height: 330px;
             }
 
             .focus {
@@ -33,18 +45,38 @@
 
             #fullDateValue {
                 font-size: 35px;
-                margin: 0;
-                padding: 0 30px;
+            }
+
+
+            :host([horizontal]) #fullDateValue {
+                font-size: 34px;
             }
 
             #yearValue {
                 font-size: 20px;
+            }
+
+            #yearValue,
+            #fullDateValue {
                 margin: 0;
                 padding: 0 30px;
             }
 
+            :host([horizontal]) #yearValue,
+            :host([horizontal]) #fullDateValue {
+                margin: 0;
+                padding: 0 15px;
+            }
+
             .calendarBody {
                 margin-top: 86px;
+                padding: 5px;
+            }
+
+            :host([horizontal]) .calendarBody {
+                margin: 0 0 0 160px;
+                padding: 0;
+                --weekdays-padding: 10px 0 0 0;
             }
 
             .actionButtons {
@@ -55,6 +87,11 @@
                 color: var(--action-button-color, var(--primary-color));
                 font-weight: 500;
                 background: #ffffff;
+            }
+
+            :host([horizontal]) .actionButtons {
+                left: 160px;
+                width: 315px;
             }
 
             #flex {
@@ -99,6 +136,12 @@
                     month: Number,
                     date: Number,
                     day: Number,
+
+                    horizontal: {
+                        type: Boolean,
+                        value: false,
+                        reflectToAttribute: true
+                    },
 
                     isMonthView: {
                         type: Boolean,
