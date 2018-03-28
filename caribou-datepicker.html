@@ -21,11 +21,11 @@
     </style>
 
     <paper-input-container id="inputContainer" always-float-label attr-for-value="value" invalid="[[invalid]]">
-      <label slot="label">{{inputLabel}}</label>
+      <label slot="label">{{label}}</label>
       <caribou-date-input class="paper-input-input" slot="input" invalid-date="{{invalid}}" date-d="{{date}}" date-m="{{month}}"
         date-y="{{year}}" format="[[dateFormat]]"></caribou-date-input>
       <paper-icon-button id="calendarIcon" slot="suffix" on-tap="open" icon="caribou-datepicker-icons:calendar"></paper-icon-button>
-      <paper-input-error slot="add-on">{{inputError}}</paper-input-error>
+      <paper-input-error slot="add-on">{{errorMessage}}</paper-input-error>
     </paper-input-container>
 
     <iron-dropdown id="dropdown">
@@ -39,11 +39,61 @@
   <script>
     /**
      * `caribou-datepicker`
-     * Polymer 2 element used to select a date picker following material design.
+     * Polymer 2 element used to select a date with a picker following material design guidelines
      *
+     * Material design: [Pickers](https://material.io/guidelines/components/pickers.html#pickers-usage)
+     *
+     * This element is a single line text field following the material design,
+     * and allow you to select a date from an overlay selector.
+     *
+     * ```html
+     * <caribou-datepicker label="My date picker input label"></caribou-datepicker>
+     * ```
+     *
+     * It may include an optional error message
+     *
+     * ```html
+     * <caribou-datepicker label="My date picker input label" error-message="Not valid dude !"></caribou-datepicker>
+     * ```
+     *
+     * By default the date will be displayed following DD-MM-YYYY, but it can be updated :
+     *
+     * ```html
+     * <caribou-datepicker label="My date picker input label" date-format="YMD"></caribou-datepicker>
+     * ```
+     *
+     * By default no value will be set on the input, but it can be initialized with the current date :
+     *
+     * ```html
+     * <caribou-datepicker label="My date picker input label" date-format="YMD" init-with-current-date></caribou-datepicker>
+     * ```
+     *
+     * Also you can set the date directly :
+     *
+     * ```html
+     * <caribou-datepicker label="My date picker input label" date-format="YMD" year="2018" month="1" date="1"></caribou-datepicker>
+     * ```
+     *
+     * You can choose the picker disposition : horizontal or vertical.
+     * By default it will be displayed vertically, but by added the horizontal property it will be changed.
+     *
+     * ```html
+     * <caribou-datepicker label="My date picker input label" date-format="YMD" year="2018" month="1" date="1" horizontal></caribou-datepicker>
+     * ```
+     *
+     * Custom property | Description | Default
+     * ----------------|-------------|----------
+     * `--header-overlay-background-color` | Color of the header background | `--primary-color`
+     * `--header-text-secondary-color` | Color of the text not in focus in the header | `--primary-light-color`
+     * `--action-button-color`| Text color of the action button | `--primary-color`
+     * `--current-active-day-color`| Color of the current date value | `--primary-color`
+     * `--current-selected-day-color`| Color of the selected date | `--primary-color`
+     * `--current-selected-year-color`| Color of the current year selected | `--primary-color`
+     * 
      * @customElement
      * @polymer
      * @demo demo/index.html
+     * @element caribou-datepicker
      */
     class CaribouDatepicker extends Polymer.Element {
       // class CaribouDatepicker extends Polymer.Element {
@@ -53,30 +103,61 @@
 
       static get properties() {
         return {
-          inputLabel: {
+
+          /**
+           * Label of the input.
+           * This is always a floating label.
+           */
+          label: {
             type: String,
             value: "Date"
           },
 
-          inputError: {
+          /**
+           * The error message if the date is invalid
+           */
+          errorMessage: {
             type: String,
             value: "Invalid date"
           },
-
+          
+          /**
+           * True if the date is invalid.
+           * False otherwise
+           */
           invalid: {
             type: Boolean,
             value: false
           },
 
+          /**
+           * The date value
+           */
           date: Number,
+
+          /**
+           * The month value
+           */
           month: Number,
+
+          /**
+           * The year value
+           */
           year: Number,
 
+          /**
+           * Used to indicate if the picker should be close when a date is selected
+           * If true, selected a date will automatically change the input value, and close the picker.
+           * Warning : If true, the setInputOnDateSelection property is true by default.
+           */
           closePickerOnDateSelection: {
             type: Boolean,
             value: false
           },
 
+          /**
+           * This will set the input when a date is selected, but this will not close the picker.
+           */
           setInputOnDateSelection: {
             type: Boolean,
             value: false
@@ -95,9 +176,23 @@
             notify: true
           },
 
+          /**
+           * Used to display the picker horizontally
+           * This can be usefull on mobile landscape.
+           */
           horizontal: {
             type: Boolean,
             value: false
+          },
+
+          /**
+           * If true this will initialize the input with the current date,
+           * Only if there is no value bind already.
+           */
+          initWithCurrentDate: {
+            type: Boolean,
+            value: false,
+            observer: "_setCurrentDate"
           }
         }
       }
@@ -108,7 +203,10 @@
         this.$.datepickerOverlay.addEventListener("ok-selected", this._setDateInput.bind(this));
         this.$.datepickerOverlay.addEventListener("close-overlay", this.closeOverlay.bind(this));
       }
-
+      
+      /**
+       * This function is used to open the overlay. 
+       */
       open() {
         this.$.dropdown.open();
       }
@@ -127,7 +225,20 @@
 
         this.closeOverlay();
       }
+      
 
+      _setCurrentDate(initWithCurrentDate) {
+        if (initWithCurrentDate && this.date === undefined && this.month === undefined && this.year === undefined) {
+          var today = new Date();
+          this.date = today.getDate();
+          this.month = today.getMonth();
+          this.year = today.getFullYear();
+        }
+      }
+
+      /**
+       * This function is used to close the overlay.
+       */
       closeOverlay() {
         this.$.dropdown.close();
       }
