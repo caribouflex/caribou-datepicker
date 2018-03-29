@@ -1,5 +1,6 @@
-<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../iron-input/iron-input.html">
+<link rel="import" href="../iron-validatable-behavior/iron-validatable-behavior.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 
 <dom-module id="caribou-date-input">
@@ -89,6 +90,7 @@
          * @memberof Caribouflex
          * @customElement
          * @polymer
+         * @appliesMixin Polymer.IronValidatableBehavior
          * @element caribou-date-input
          */
         class DateInputElement extends Polymer.mixinBehaviors([Polymer.IronValidatableBehavior], Polymer.Element) {
