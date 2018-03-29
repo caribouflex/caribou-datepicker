@@ -148,12 +148,12 @@
          * `--current-active-day-color`| Color of the current date value | `--primary-color`
          * `--current-selected-day-color`| Color of the selected date | `--primary-color`
          *
-         *
+         * @memberof Caribouflex
          * @customElement
          * @polymer
          * @element caribou-month
          */
-        class CaribouMonthElement extends Polymer.Element {
+        class MonthElement extends Polymer.Element {
 
             /**
              * Fired when the stepper is finished and all the steps are saved.
@@ -636,6 +636,11 @@
             }
         }
 
-        window.customElements.define(CaribouMonthElement.is, CaribouMonthElement);
+        window.customElements.define(MonthElement.is, MonthElement);
+
+        /**
+         * @namespace Caribouflex
+         */
+        window.Caribouflex.MonthElement = MonthElement;
     </script>
 </dom-module>

@@ -59,12 +59,12 @@
          * ----------------|-------------|----------
          * `--current-selected-year-color`| Color of the current year selected | `--primary-color`
          *
-         * 
+         * @memberof Caribouflex
          * @customElement
          * @polymer
          * @element caribou-date-input
          */
-        class CaribouYearElement extends Polymer.Element {
+        class YearElement extends Polymer.Element {
 
             /**
              * Fired when the stepper is finished and all the steps are saved.
@@ -264,6 +264,11 @@
             }
         }
 
-        window.customElements.define(CaribouYearElement.is, CaribouYearElement);
+        window.customElements.define(YearElement.is, YearElement);
+
+        /**
+         * @namespace Caribouflex
+         */
+        window.Caribouflex.YearElement = YearElement;
     </script>
 </dom-module>

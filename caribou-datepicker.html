@@ -81,14 +81,13 @@
      * <caribou-datepicker label="My date picker input label" date-format="YMD" year="2018" month="1" date="1" horizontal></caribou-datepicker>
      * ```
      *
-     * 
+     * @memberof Caribouflex
      * @customElement
      * @polymer
      * @demo demo/index.html
      * @element caribou-datepicker
      */
-    class CaribouDatepicker extends Polymer.Element {
-      // class CaribouDatepicker extends Polymer.Element {
+    class DatepickerElement extends Polymer.Element {
       static get is() {
         return 'caribou-datepicker';
       }
@@ -237,6 +236,11 @@
       }
     }
 
-    window.customElements.define(CaribouDatepicker.is, CaribouDatepicker);
+    window.customElements.define(DatepickerElement.is, DatepickerElement);
+
+    /**
+     * @namespace Caribouflex
+     */
+    window.Caribouflex.DatepickerElement = DatepickerElement;
   </script>
 </dom-module>

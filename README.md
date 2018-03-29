@@ -35,7 +35,7 @@ To see the styling by element check the `<caribou-calendar>`, `<caribou-year>`, 
     <script src="../webcomponentsjs/webcomponents-lite.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     <link rel="import" href="caribou-datepicker.html">
-    <style>html{font-family: 'Roboto', sans-serif;}</style>
+    <style>html{font-family: 'Roboto', sans-serif; height:500px;}</style>
     <next-code-block></next-code-block>
   </template>
 </custom-element-demo>

@@ -27,12 +27,13 @@
          * 
          * This element is only used as a container for the input overlay.
          * It include the `caribou-calendar` element
-         *
+         * 
+         * @memberof Caribouflex
          * @customElement
          * @polymer
          * @element caribou-datepicker-overlay
          */
-        class CaribouDatepickerOverlayElement extends Polymer.Element {
+        class DatepickerOverlayElement extends Polymer.Element {
             static get is() {
                 return 'caribou-datepicker-overlay';
             }
@@ -76,6 +77,11 @@
             }
         }
 
-        window.customElements.define(CaribouDatepickerOverlayElement.is, CaribouDatepickerOverlayElement);
+        window.customElements.define(DatepickerOverlayElement.is, DatepickerOverlayElement);
+
+        /**
+         * @namespace Caribouflex
+         */
+        window.Caribouflex.DatepickerOverlayElement = DatepickerOverlayElement;
     </script>
 </dom-module>

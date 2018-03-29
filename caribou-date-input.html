@@ -86,11 +86,12 @@
          * <caribou-date-input date-format="YMD"></caribou-date-input>
          * ```
          * 
+         * @memberof Caribouflex
          * @customElement
          * @polymer
          * @element caribou-date-input
          */
-        class CaribouDateInput extends Polymer.mixinBehaviors([Polymer.IronValidatableBehavior], Polymer.Element) {
+        class DateInputElement extends Polymer.mixinBehaviors([Polymer.IronValidatableBehavior], Polymer.Element) {
             static get is() {
                 return 'caribou-date-input';
             }
@@ -299,6 +300,11 @@
             }
         }
 
-        window.customElements.define(CaribouDateInput.is, CaribouDateInput);
+        window.customElements.define(DateInputElement.is, DateInputElement);
+
+        /**
+         * @namespace Caribouflex
+         */
+        window.Caribouflex.DateInputElement = DateInputElement;
     </script>
 </dom-module>

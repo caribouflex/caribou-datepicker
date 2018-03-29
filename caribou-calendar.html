@@ -133,12 +133,12 @@
          * `--header-text-secondary-color` | Color of the text not in focus in the header | `--primary-light-color`
          * `--action-button-color`| Text color of the action button | `--primary-color`
          *
-         *
+         * @memberof Caribouflex
          * @customElement
          * @polymer
          * @element caribou-calendar
          */
-        class CaribouCalendarElement extends Polymer.Element {
+        class CalendarElement extends Polymer.Element {
 
             /**
              * Fired when the stepper is finished and all the steps are saved.
@@ -332,6 +332,11 @@
             }
         }
 
-        window.customElements.define(CaribouCalendarElement.is, CaribouCalendarElement);
+        window.customElements.define(CalendarElement.is, CalendarElement);
+
+        /**
+         * @namespace Caribouflex
+         */
+        window.Caribouflex.CalendarElement = CalendarElement;
     </script>
 </dom-module>
