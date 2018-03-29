@@ -4,8 +4,6 @@
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="caribou-datepicker-custom-icons.html">
 
-
-
 <dom-module id="caribou-month">
     <template>
         <style>
@@ -138,13 +136,32 @@
     <script>
         /**
          * `caribou-datepicker`
-         * Polymer 2 element used to select a date picker following material design.
+         * 
+         * This element is the month view selection. 
+         * Individualy this element will allow you to set a date, select a date and navigate between the month.
+         * An event `date-selected` is dispatch when a date is selected.
+         *
+         * ### Styling The following custom properties and mixins are available for styling:
+         *
+         * Custom property | Description | Default
+         * ----------------|-------------|----------
+         * `--current-active-day-color`| Color of the current date value | `--primary-color`
+         * `--current-selected-day-color`| Color of the selected date | `--primary-color`
+         *
          *
          * @customElement
          * @polymer
-         * @demo demo/index.html
+         * @element caribou-month
          */
         class CaribouMonthElement extends Polymer.Element {
+
+            /**
+             * Fired when the stepper is finished and all the steps are saved.
+             *
+             * @event date-selected
+             * @param {Object} detail { date: 1, month: 1, year: 2018 }
+             */
+
             static get is() {
                 return 'caribou-month';
             }
@@ -575,7 +592,6 @@
             previousMonth() {
                 var prevMonth = new Date(this.yearTemp, this.monthTemp - 1, 1);
 
-                // this.month = prevMonth.getMonth() === 0 ? 12 : prevMonth.getMonth();
                 this.monthTemp = prevMonth.getMonth() === 0 ? 12 : prevMonth.getMonth();
                 if (this.monthTemp === 12)
                     this.yearTemp = prevMonth.getFullYear() - 1;

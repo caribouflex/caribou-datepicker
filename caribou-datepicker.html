@@ -81,14 +81,6 @@
      * <caribou-datepicker label="My date picker input label" date-format="YMD" year="2018" month="1" date="1" horizontal></caribou-datepicker>
      * ```
      *
-     * Custom property | Description | Default
-     * ----------------|-------------|----------
-     * `--header-overlay-background-color` | Color of the header background | `--primary-color`
-     * `--header-text-secondary-color` | Color of the text not in focus in the header | `--primary-light-color`
-     * `--action-button-color`| Text color of the action button | `--primary-color`
-     * `--current-active-day-color`| Color of the current date value | `--primary-color`
-     * `--current-selected-day-color`| Color of the selected date | `--primary-color`
-     * `--current-selected-year-color`| Color of the current year selected | `--primary-color`
      * 
      * @customElement
      * @polymer
@@ -201,7 +193,7 @@
       ready() {
         super.ready();
         this.$.datepickerOverlay.addEventListener("date-selected", this._setDateInput.bind(this));
-        this.$.datepickerOverlay.addEventListener("ok-selected", this._setDateInput.bind(this));
+        this.$.datepickerOverlay.addEventListener("ok-clicked", this._setDateInput.bind(this));
         this.$.datepickerOverlay.addEventListener("close-overlay", this.closeOverlay.bind(this));
       }
 

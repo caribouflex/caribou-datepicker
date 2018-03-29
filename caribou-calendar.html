@@ -124,9 +124,19 @@
          * It will contain the header with the date, the action buttons and can work separately.
          * It can be used in another element different from the `caribou-datepicker`.
          *
+         *
+         * ### Styling The following custom properties and mixins are available for styling:
+         *
+         * Custom property | Description | Default
+         * ----------------|-------------|----------
+         * `--header-overlay-background-color` | Color of the header background | `--primary-color`
+         * `--header-text-secondary-color` | Color of the text not in focus in the header | `--primary-light-color`
+         * `--action-button-color`| Text color of the action button | `--primary-color`
+         *
+         *
          * @customElement
          * @polymer
-         * @demo demo/index.html
+         * @element caribou-calendar
          */
         class CaribouCalendarElement extends Polymer.Element {
 
@@ -140,7 +150,7 @@
             /**
              * Fired when the stepper is finished and all the steps are saved.
              *
-             * @event ok-selected
+             * @event ok-clicked
              * @param {Object} detail { date: 1, month: 1, year: 2018 }
              */
 
@@ -310,7 +320,7 @@
              * @private
              */
             _validSelection() {
-                this.dispatchEvent(new CustomEvent('ok-selected', {
+                this.dispatchEvent(new CustomEvent('ok-clicked', {
                     detail: {
                         date: this.date,
                         month: this.month,
