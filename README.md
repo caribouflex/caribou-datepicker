@@ -22,6 +22,7 @@ Custom property | Description | Default
 `--current-active-day-color`| Color of the current date value | `--primary-color`
 `--current-selected-day-color`| Color of the selected date | `--primary-color`
 `--current-selected-year-color`| Color of the current year selected | `--primary-color`
+`--input-calendar-icon`| Mixin to customize the input calendar icon | `{}`
 
 
 To see the styling by element check the `<caribou-calendar>`, `<caribou-year>`, `<caribou-month>`.

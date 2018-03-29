@@ -8,7 +8,7 @@
             :host {
                 display: block;
                 overflow-y: auto;
-                height: 394px;
+                height: 342px;
                 /*Padding added to hide the scrollbar*/
                 padding-right: 20px;
                 width: 100%;
@@ -62,7 +62,7 @@
          * @memberof Caribouflex
          * @customElement
          * @polymer
-         * @element caribou-date-input
+         * @element caribou-year
          */
         class YearElement extends Polymer.Element {
 
@@ -79,12 +79,22 @@
 
             static get properties() {
                 return {
+
+                    /**
+                     * Indicate if the element is hidden or not
+                     */
+                    hidden: {
+                        type: Boolean,
+                        value: false
+                    },
+
                     /**
                      * This is the current year or year selected.
                      * This year will appear selecte in the view.
                      */
                     year: {
-                        type: Number
+                        type: Number,
+                        observer: "setYear"
                     },
 
                     /**
@@ -144,9 +154,10 @@
              * @param {Number} year The year value
              */
             setYear(year) {
-                this.currentYear = year;
-                this.year = year;
-                this.lastYear = year;
+                this.year = Number(year);
+                this.currentYear = Number(year);;
+                this.year = Number(year);;
+                this.lastYear = Number(year);;
                 this.initYearArray();
             }
 
@@ -269,6 +280,7 @@
         /**
          * @namespace Caribouflex
          */
+        window.Caribouflex = window.Caribouflex || {};
         window.Caribouflex.YearElement = YearElement;
     </script>
 </dom-module>

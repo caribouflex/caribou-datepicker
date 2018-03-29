@@ -70,13 +70,19 @@
 
             .calendarBody {
                 margin-top: 86px;
-                padding: 5px;
             }
 
             :host([horizontal]) .calendarBody {
                 margin: 0 0 0 160px;
-                padding: 0;
                 --weekdays-padding: 10px 0 0 0;
+            }
+            
+            #caribouMonth {
+                padding: 5px;
+            }
+
+            :host([horizontal]) #caribouMonth {
+                padding: 0;
             }
 
             .actionButtons {
@@ -101,7 +107,7 @@
 
         <div class="header">
             <paper-button noink id="yearValue" class$="{{_getYearFocusClass(isMonthView)}}" on-tap="monthToYear">{{yearTemp}}</paper-button>
-            <paper-button noink id="fullDateValue" class$="{{_getMonthFocusClass(isMonthView)}}" on-tap="yearToMonth">{{_getDateString(date,month)}}</paper-button>
+            <paper-button noink id="fullDateValue" class$="{{_getMonthFocusClass(isMonthView)}}" on-tap="yearToMonth">{{_getDateString(date, month, day)}}</paper-button>
         </div>
 
         <caribou-month id="caribouMonth" class="calendarBody" date="{{date}}" month="{{month}}" day="{{day}}" year="{{year}}" year-temp="{{yearTemp}}"
@@ -215,7 +221,7 @@
                 super.ready();
                 this.$.caribouMonth.addEventListener("display-year-view", this._toggleView.bind(this));
                 this.$.caribouYear.addEventListener("year-selected", this._toggleView.bind(this));
-                this.getCurrentDate();
+                //this.getCurrentDate();
             }
 
             /**
@@ -284,7 +290,7 @@
              * @param {Number} date The date value 
              * @private
              */
-            _getDateString(date) {
+            _getDateString(date, month, day) {
                 if (this.day !== undefined)
                     var dayString = this.$.caribouMonth.getDayValue(this.day, true);
                 if (this.month !== undefined)
@@ -337,6 +343,7 @@
         /**
          * @namespace Caribouflex
          */
+        window.Caribouflex = window.Caribouflex || {};
         window.Caribouflex.CalendarElement = CalendarElement;
     </script>
 </dom-module>

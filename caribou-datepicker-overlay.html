@@ -17,7 +17,7 @@
                 width: 475px;
             }
         </style>
-        <caribou-calendar id="caribouCalendar" horizontal="[[horizontal]]" date="{{date}}" month={{month}} year="{{year}}"></caribou-calendar>
+        <caribou-calendar id="caribouCalendar" horizontal="[[horizontal]]" day="{{day}}" date="{{date}}" month={{month}} year="{{year}}"></caribou-calendar>
 
     </template>
 
@@ -66,6 +66,14 @@
                     },
 
                     /**
+                     * day value
+                     */
+                    day: {
+                        type: Number,
+                        notify: true
+                    },
+
+                    /**
                      * True if horizontal false otherwise.
                      */
                     horizontal: {
@@ -75,6 +83,18 @@
                     },
                 };
             }
+
+            /**
+             * This function is used to set the current date.
+             */
+            initCurrentDate() {
+                var today = new Date();
+                this.day = today.getDay();
+                this.month = today.getMonth();
+                this.year = today.getFullYear();
+                this.date = today.getDate();
+            }
+
         }
 
         window.customElements.define(DatepickerOverlayElement.is, DatepickerOverlayElement);
@@ -82,6 +102,7 @@
         /**
          * @namespace Caribouflex
          */
+        window.Caribouflex = window.Caribouflex || {};
         window.Caribouflex.DatepickerOverlayElement = DatepickerOverlayElement;
     </script>
 </dom-module>

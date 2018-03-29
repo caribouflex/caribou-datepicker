@@ -18,6 +18,10 @@
         border-radius: 3px;
         box-shadow: 0px 2px 6px #ccc;
       }
+
+      #calendarIcon {
+        @apply --input-calendar-icon;
+      }
     </style>
 
     <paper-input-container id="inputContainer" always-float-label attr-for-value="value" invalid="[[invalid]]">
@@ -30,7 +34,8 @@
 
     <iron-dropdown id="dropdown">
       <div slot="dropdown-content">
-        <caribou-datepicker-overlay id="datepickerOverlay" horizontal="[[horizontal]]" date="[[date]]" month="[[month]]" year="[[year]]"></caribou-datepicker-overlay>
+        <caribou-datepicker-overlay id="datepickerOverlay" horizontal="[[horizontal]]" day="[[day]]" date="[[date]]" month="[[month]]"
+          year="[[year]]"></caribou-datepicker-overlay>
       </div>
     </iron-dropdown>
 
@@ -80,6 +85,13 @@
      * ```html
      * <caribou-datepicker label="My date picker input label" date-format="YMD" year="2018" month="1" date="1" horizontal></caribou-datepicker>
      * ```
+     *
+     * ### Styling The following custom properties and mixins are available for styling:
+     *
+     * Custom property | Description | Default
+     * ----------------|-------------|----------
+     * `--input-calendar-icon`| Mixin to customize the input calendar icon | `{}`
+     *
      *
      * @memberof Caribouflex
      * @customElement
@@ -136,6 +148,11 @@
            * The year value
            */
           year: Number,
+
+          /**
+           * The day value
+           */
+          day: Number,
 
           /**
            * Used to indicate if the picker should be close when a date is selected
@@ -196,11 +213,27 @@
         this.$.datepickerOverlay.addEventListener("close-overlay", this.closeOverlay.bind(this));
       }
 
+      static get observers() {
+        return [
+          "_setDay(date, month, year)"
+        ];
+      }
+
       /**
        * This function is used to open the overlay. 
        */
       open() {
+        if (this.year === undefined || this.month === undefined || this.date === undefined) {
+          this.$.datepickerOverlay.initCurrentDate();
+        }
         this.$.dropdown.open();
+      }
+
+      _setDay(date, month, year) {
+        if (date !== undefined && month !== undefined && year !== undefined) {
+          var dateObj = new Date(year, month - 1, date);
+          this.day = dateObj.getDay();
+        }
       }
 
       _setDateInput(e) {
@@ -208,9 +241,9 @@
         if (e.type == "date-selected" && !this.closePickerOnDateSelection && !this.setInputOnDateSelection)
           return;
 
-        this.date = e.detail.date;
         this.month = e.detail.month;
         this.year = e.detail.year;
+        this.date = e.detail.date;
 
         if (e.type == "date-selected" && !this.closePickerOnDateSelection)
           return;
@@ -221,11 +254,20 @@
 
       _setCurrentDate(initWithCurrentDate) {
         if (initWithCurrentDate && this.date === undefined && this.month === undefined && this.year === undefined) {
-          var today = new Date();
-          this.date = today.getDate();
-          this.month = today.getMonth();
-          this.year = today.getFullYear();
+          this.initCurrentDate();
         }
+      }
+
+      /**
+       * This function is used to set the current date.
+       */
+      initCurrentDate() {
+        var today = new Date();
+        this.day = today.getDay();
+        this.month = today.getMonth();
+        this.year = today.getFullYear();
+        this.date = today.getDate();
+
       }
 
       /**
@@ -241,6 +283,7 @@
     /**
      * @namespace Caribouflex
      */
+    window.Caribouflex = window.Caribouflex || {};
     window.Caribouflex.DatepickerElement = DatepickerElement;
   </script>
 </dom-module>

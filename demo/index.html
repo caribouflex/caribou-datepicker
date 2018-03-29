@@ -15,12 +15,18 @@
 
   <custom-style>
     <style is="custom-style" include="demo-pages-shared-styles">
-      /* --header-overlay-background-color: red;
+      #picker4 {
+        --header-overlay-background-color: red;
         --header-text-secondary-color: blue;
         --action-button-color: yellow;
         --current-active-day-color: green;
         --current-selected-day-color: purple;
-        --current-selected-year-color: magenta; */
+        --current-selected-year-color: magenta;
+        --input-calendar-icon: {
+          color: blue;
+          --paper-icon-button-ink-color: red;
+        }
+      }
     </style>
   </custom-style>
 </head>
@@ -30,10 +36,13 @@
     <h3>Basic caribou-datepicker demo</h3>
     <demo-snippet>
       <template>
-        <caribou-datepicker init-with-current-date input-label="Date (classic)"></caribou-datepicker>
-        <caribou-datepicker init-with-current-date date-format="YMD" input-label="Date (setinputOnDateSelection)" set-input-on-date-selection></caribou-datepicker>
-        <caribou-datepicker horizontal date-format="MDY" input-label="Date (closePickerOnDateSelection + setinputOnDateSelection)"
-          close-picker-on-date-selection set-input-on-date-selection></caribou-datepicker>
+        <caribou-datepicker label="Date (classic empty)"></caribou-datepicker>
+        <caribou-datepicker init-with-current-date label="Date (classic)"></caribou-datepicker>
+        <caribou-datepicker init-with-current-date date-format="YMD" label="Date (setinputOnDateSelection)" set-input-on-date-selection></caribou-datepicker>
+        <caribou-datepicker horizontal date-format="MDY" label="Date (closePickerOnDateSelection + setinputOnDateSelection)" close-picker-on-date-selection
+          set-input-on-date-selection></caribou-datepicker>
+        <caribou-datepicker label="Date (set date with attribute)" month="8" year="1990" date="31"></caribou-datepicker>
+        <caribou-datepicker id="picker4" label="Date (Color customization)" set-input-on-date-selection></caribou-datepicker>
       </template>
     </demo-snippet>
   </div>
